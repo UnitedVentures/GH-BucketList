@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import useParallax from '../hooks/useParallax.js'
+import useScramble from '../hooks/useScramble.js'
 import { heroTours, whatsapp } from '../data/editions.js'
 
 export default function Hero() {
@@ -7,23 +8,29 @@ export default function Hero() {
   const titleRef = useRef(null)
   const [index, setIndex] = useState(0)
   const tour = heroTours[index]
+  const title = tour.heroTitle || tour.place
+  const scrambledTitle = useScramble(title)
 
-  // Fit the title to its container on a single line: start from the CSS
-  // size, measure the overflow, and scale down proportionally.
+  // Fit the title to its container on a single line: measure the final
+  // title text (not the mid-scramble frame) at the CSS size and scale
+  // down proportionally if it overflows.
   useLayoutEffect(() => {
     const el = titleRef.current
     if (!el) return
     const fit = () => {
+      const shown = el.textContent
+      el.textContent = title
       el.style.fontSize = ''
       const base = parseFloat(getComputedStyle(el).fontSize)
       if (el.scrollWidth > el.clientWidth) {
         el.style.fontSize = `${base * (el.clientWidth / el.scrollWidth) * 0.97}px`
       }
+      el.textContent = shown
     }
     fit()
     window.addEventListener('resize', fit)
     return () => window.removeEventListener('resize', fit)
-  }, [index])
+  }, [title])
 
   const step = (dir) =>
     setIndex((i) => (i + dir + heroTours.length) % heroTours.length)
@@ -50,7 +57,7 @@ export default function Hero() {
           The {tour.month} Edition · {tour.edition}
         </p>
         <h1 className="hero__place" ref={titleRef}>
-          {tour.heroTitle || tour.place}
+          {scrambledTitle}
         </h1>
         <p className="hero__country">{tour.country}</p>
         <p className="hero__tagline">{tour.tagline}</p>
@@ -91,7 +98,7 @@ export default function Hero() {
               className={`hero__month${i === index ? ' is-active' : ''}`}
               onClick={() => setIndex(i)}
             >
-              {t.month.split(' ')[0]} · {t.place}
+              {t.month.split(' ')[0]}
             </button>
           ))}
           <button

@@ -251,11 +251,21 @@ a {
   text-align: center;
   padding-top: 15vh;
   margin-bottom: auto;
-  animation: heroFade 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* staggered entrance: each line of hero text appears a beat later */
+.hero__content > * {
+  animation: heroFade 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero__content > *:nth-child(1) { animation-delay: 0.05s; }
+.hero__content > *:nth-child(2) { animation-delay: 0.16s; }
+.hero__content > *:nth-child(3) { animation-delay: 0.28s; }
+.hero__content > *:nth-child(4) { animation-delay: 0.4s; }
+.hero__content > *:nth-child(5) { animation-delay: 0.52s; }
+
 .hero__blurb {
-  animation: heroFade 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: heroFade 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
 }
 
 @keyframes heroFade {
@@ -584,16 +594,51 @@ a {
 
 .journeys {
   position: relative;
-  background: var(--coal);
-}
-
-.journeys__sticky {
-  position: sticky;
-  top: 0;
   height: 100vh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--coal);
+}
+
+.journeys__chevron {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  background: none;
+  border: none;
+  padding: 1rem 0.6rem;
+  cursor: pointer;
+  color: var(--cream);
+  opacity: 0.22;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.journeys__chevron svg {
+  width: clamp(24px, 2.8vw, 40px);
+  height: auto;
+  display: block;
+}
+
+.journeys__chevron--prev {
+  left: clamp(0.6rem, 2vw, 2.2rem);
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.journeys__chevron--next {
+  right: clamp(0.6rem, 2vw, 2.2rem);
+  transform: translateY(-50%);
+}
+
+.journeys__chevron--prev:hover {
+  opacity: 0.8;
+  transform: translateY(-50%) scaleX(-1) translateX(4px);
+}
+
+.journeys__chevron--next:hover {
+  opacity: 0.8;
+  transform: translateY(-50%) translateX(4px);
 }
 
 .journeys__head {
@@ -628,51 +673,76 @@ a {
   color: var(--stone);
 }
 
-.journeys__track {
-  flex: 1;
+/* full-bleed image slides gliding behind a static text panel */
+.journeys__bgs {
+  position: absolute;
+  inset: 0;
   display: flex;
-  align-items: center;
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 1.15s cubic-bezier(0.65, 0, 0.35, 1);
   will-change: transform;
 }
 
-.jslide {
+.journeys__bg {
   flex: 0 0 100%;
-  min-width: 0;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: saturate(0.95);
 }
 
-.jslide__grid {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: clamp(2.5rem, 5vw, 5.5rem);
+/* left half: blurred… */
+.journeys__blur {
+  position: absolute;
+  inset: 0 42% 0 0;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
+}
+
+/* …and darkened into the section background colour */
+.journeys__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--coal) 0%, rgba(28, 22, 19, 0.94) 26%, rgba(28, 22, 19, 0.62) 48%, rgba(28, 22, 19, 0.14) 70%, rgba(28, 22, 19, 0) 100%),
+    linear-gradient(180deg, rgba(28, 22, 19, 0.6) 0%, transparent 24%, transparent 76%, rgba(28, 22, 19, 0.55) 100%);
+}
+
+.journeys__head,
+.journeys__panelwrap,
+.journeys__hint {
+  position: relative;
+  z-index: 2;
+}
+
+.journeys__panelwrap {
+  flex: 1;
+  display: flex;
   align-items: center;
 }
 
-.jslide__media {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  max-height: 52vh;
+.journeys__panel {
+  max-width: 500px;
 }
 
-.jslide__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(0.92);
-}
-
-.jslide__media::after {
-  content: attr(data-edition);
-  position: absolute;
-  top: 1.3rem;
-  left: 1.5rem;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1rem;
+.jslide__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+  font-size: 0.64rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
   color: var(--cream);
-  letter-spacing: 0.1em;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 6px;
+  transition: color 0.3s ease, gap 0.3s ease;
+}
+
+.jslide__link:hover {
+  color: var(--gold-soft);
+  gap: 1.2rem;
 }
 
 .jslide__month {
@@ -713,25 +783,7 @@ a {
   color: var(--cream-dim);
   margin-top: 1rem;
   max-width: 50ch;
-}
-
-.jslide__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-top: 1.8rem;
-  font-size: 0.64rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--cream);
-  border-bottom: 1px solid var(--gold);
-  padding-bottom: 6px;
-  transition: color 0.3s ease, gap 0.3s ease;
-}
-
-.jslide__link:hover {
-  color: var(--gold-soft);
-  gap: 1.2rem;
+  animation: heroFade 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
 }
 
 .journeys__hint {
@@ -849,19 +901,26 @@ a {
     display: none;
   }
 
-  .manifesto__grid,
-  .jslide__grid {
+  .manifesto__grid {
     grid-template-columns: 1fr;
   }
 
-  .jslide__grid {
-    gap: 1.8rem;
-    align-content: center;
+  /* small screens: darken and blur the lower half instead of the left */
+  .journeys__blur {
+    inset: 38% 0 0 0;
+    mask-image: linear-gradient(0deg, #000 55%, transparent 100%);
+    -webkit-mask-image: linear-gradient(0deg, #000 55%, transparent 100%);
   }
 
-  .jslide__media {
-    aspect-ratio: 16 / 10;
-    max-height: 34vh;
+  .journeys__scrim {
+    background:
+      linear-gradient(0deg, var(--coal) 0%, rgba(28, 22, 19, 0.94) 26%, rgba(28, 22, 19, 0.55) 55%, rgba(28, 22, 19, 0.1) 78%, rgba(28, 22, 19, 0) 100%),
+      linear-gradient(180deg, rgba(28, 22, 19, 0.6) 0%, transparent 26%);
+  }
+
+  .journeys__panelwrap {
+    align-items: flex-end;
+    padding-bottom: 1.2rem;
   }
 
   .jslide__detail {
@@ -937,12 +996,12 @@ a {
     transform: none !important;
   }
 
-  .hero__content,
+  .hero__content > *,
   .hero__blurb {
     animation: none;
   }
 
-  .journeys__track {
+  .journeys__bgs {
     transition: none;
   }
 }
