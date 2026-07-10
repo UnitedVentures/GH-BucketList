@@ -50,8 +50,8 @@ export default function Footer() {
           </a>
           <p>© 2026 Bucket List by Go Holidays · One extraordinary journey at a time</p>
           <div className="footer__social">
-            <a href="#" aria-label="Instagram">Instagram</a>
-            <a href="#" aria-label="Facebook">Facebook</a>
+            <a href="https://www.instagram.com/goholidays_srilanka/" aria-label="Instagram">Instagram</a>
+            <a href="https://www.facebook.com/goholidays.srilanka" aria-label="Facebook">Facebook</a>
             <a
               href="https://wa.me/94772211600"
               target="_blank"

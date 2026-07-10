@@ -7,6 +7,7 @@ export const whatsapp = (message) =>
 
 export const featured = {
   edition: 'Nº 09',
+  slug: 'south-africa',
   month: 'September 2026',
   place: 'South Africa',
   heroTitle: 'South Africa',
@@ -21,6 +22,7 @@ export const featured = {
 export const upcoming = [
   {
     edition: 'Nº 10',
+    slug: 'dambadiva-by-rail',
     month: 'October 2026',
     place: 'Luxury Dambadiva by Rail',
     heroTitle: 'Luxury Dambadiva',
@@ -33,6 +35,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 11',
+    slug: 'dubai-from-above',
     month: 'November 2026',
     place: 'Dubai from Above',
     heroTitle: 'Dubai from Above',
@@ -45,6 +48,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 12',
+    slug: 'christmas-markets',
     month: 'December 2026',
     place: 'Christmas Markets by River',
     country: 'Germany · Viva Cruises',
@@ -54,6 +58,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 01',
+    slug: 'northern-lights',
     month: 'January 2027',
     place: 'Northern Lights',
     country: 'Norway',
@@ -63,6 +68,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 02',
+    slug: 'cherry-blossom',
     month: 'February 2027',
     place: 'Cherry Blossom Preview',
     country: 'Japan',
@@ -72,6 +78,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 03',
+    slug: 'jakarta-jazz',
     month: 'March 2027',
     place: 'Jakarta International Jazz Festival',
     country: 'Indonesia',
@@ -81,6 +88,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 04',
+    slug: 'alps-and-tulips',
     month: 'April 2027',
     place: 'Swiss Alps & Tulips',
     country: 'Switzerland & The Netherlands',
@@ -90,6 +98,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 05',
+    slug: 'machu-picchu',
     month: 'May 2027',
     place: 'Machu Picchu & Cusco',
     country: 'Peru',
@@ -99,6 +108,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 06',
+    slug: 'alaska-montreal',
     month: 'June 2027',
     place: 'Alaska Cruise & Montreal Jazz',
     country: 'USA & Canada',
@@ -108,6 +118,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 07',
+    slug: 'great-migration',
     month: 'July 2027',
     place: 'The Great Migration',
     country: 'Kenya',
@@ -117,6 +128,7 @@ export const upcoming = [
   },
   {
     edition: 'Nº 08',
+    slug: 'silk-road',
     month: 'August 2027',
     place: 'Luxury Silk Road',
     country: 'Uzbekistan',

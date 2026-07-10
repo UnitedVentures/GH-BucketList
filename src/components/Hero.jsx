@@ -70,6 +70,9 @@ export default function Hero() {
           >
             Reserve the Experience
           </a>
+          <a className="btn btn--ghost" href={`?itinerary=${tour.slug}`}>
+            View the Itinerary
+          </a>
         </div>
       </div>
 
