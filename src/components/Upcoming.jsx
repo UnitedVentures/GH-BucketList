@@ -48,7 +48,7 @@ export default function Upcoming() {
 
       <div className="wrap journeys__head">
         <div>
-          <p className="eyebrow">The Year Ahead</p>
+          {/* <p className="eyebrow">The Year Ahead</p> */}
           <h2>
             Upcoming <em>Journeys</em>
           </h2>
