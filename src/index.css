@@ -1069,8 +1069,39 @@ a {
   max-width: 58ch;
 }
 
-.itin__dayimage {
-  overflow: hidden;
+/* gold frame with a small mat gap between stroke and photograph */
+.itin__dayimage,
+.itin__altimage {
+  position: relative;
+  padding: 7px;
+  border: 1px solid rgba(191, 160, 74, 0.55);
+}
+
+.itin__dayimage::before,
+.itin__altimage::before,
+.itin__dayimage::after,
+.itin__altimage::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+}
+
+.itin__dayimage::before,
+.itin__altimage::before {
+  top: -5px;
+  left: -5px;
+  border-top: 1px solid var(--gold);
+  border-left: 1px solid var(--gold);
+}
+
+.itin__dayimage::after,
+.itin__altimage::after {
+  bottom: -5px;
+  right: -5px;
+  border-bottom: 1px solid var(--gold);
+  border-right: 1px solid var(--gold);
 }
 
 .itin__dayimage img {
@@ -1078,6 +1109,7 @@ a {
   aspect-ratio: 3 / 2;
   object-fit: cover;
   filter: saturate(0.92);
+  display: block;
 }
 
 .itin__grid {
@@ -1163,6 +1195,24 @@ a {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   filter: saturate(0.92);
+  display: block;
+}
+
+.itin__navactions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* lineart ornament divider */
+.itin__ornament {
+  display: block;
+  width: min(240px, 60vw);
+  margin: 3.2rem auto 0;
+  color: var(--gold);
+  opacity: 0.85;
 }
 
 .itin__alttitle {

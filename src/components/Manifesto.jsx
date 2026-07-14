@@ -4,7 +4,7 @@ export default function Manifesto() {
       <div className="wrap">
         <div className="manifesto__grid">
           <div className="reveal">
-            <p className="eyebrow">The Bucket List Collection</p>
+            {/* <p className="eyebrow">The Bucket List Collection</p> */}
             <h2>
               Not all journeys are measured in miles.{' '}<br/>
               <em>Some are measured in moments.</em>
