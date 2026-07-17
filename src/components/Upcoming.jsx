@@ -48,7 +48,7 @@ export default function Upcoming() {
 
       <div className="wrap journeys__head">
         <div>
-          <p className="eyebrow">The Year Ahead</p>
+          {/* <p className="eyebrow">The Year Ahead</p> */}
           <h2>
             Upcoming <em>Journeys</em>
           </h2>
@@ -72,16 +72,24 @@ export default function Upcoming() {
               {journey.description}
             </p>
           )}
-          <a
-            className="jslide__link"
-            href={whatsapp(
-              `Hello Go Holidays! I'd like to reserve the ${journey.month} Bucket List experience — ${journey.place}.`,
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Reserve the Experience <span aria-hidden="true">→</span>
-          </a>
+          <div className="jslide__links">
+            <a
+              className="jslide__link"
+              href={whatsapp(
+                `Hello Go Holidays! I'd like to reserve the ${journey.month} Bucket List experience — ${journey.place}.`,
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Reserve the Experience <span aria-hidden="true">→</span>
+            </a>
+            <a
+              className="jslide__link jslide__link--muted"
+              href={`?itinerary=${journey.slug}`}
+            >
+              View the Itinerary <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
       </div>
 
