@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react'
 
 /**
@@ -6,7 +7,14 @@ import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react'
  * NOTE: use `@shadergradient/react`, NOT the old `shadergradient`
  * package — that one bundles a duplicate React and crashes.
  */
-export default function ShaderBg() {
+export default function ShaderBg({ onReady }) {
+  // Tells Story the Suspense fallback has resolved and the canvas is
+  // actually on screen — Story uses this to start its step timers only
+  // once there's something visible to look at, not the moment it mounts.
+  useEffect(() => {
+    onReady?.()
+  }, [onReady])
+
   return (
     <ShaderGradientCanvas
       style={{ position: 'absolute', inset: 0 }}
@@ -14,31 +22,45 @@ export default function ShaderBg() {
       fov={45}
     >
       <ShaderGradient
-        control="props"
-        type="waterPlane"
         animate="on"
-        uSpeed={0.15}
-        uStrength={2.4}
-        uDensity={1.4}
-        uFrequency={3.5}
-        uAmplitude={0}
-        positionX={0}
+        axesHelper="off"
+        brightness={0.4}
+        cAzimuthAngle={180}
+        cDistance={3.1}
+        cPolarAngle={90}
+        cameraZoom={1}
+        color1="#b8ffc1"
+        color2="#007e00"
+        color3="#a0e13f"
+        destination="onCanvas"
+        embedMode="off"
+        envPreset="city"
+        format="gif"
+        fov={60}
+        frameRate={10}
+        gizmoHelper="hide"
+        grain="on"
+        lightType="env"
+        pixelDensity={1.4}
+        positionX={-1.4}
         positionY={0}
         positionZ={0}
-        rotationX={50}
-        rotationY={0}
-        rotationZ={-60}
-        cameraZoom={15.3}
-        color1="#0f120a"
-        color2="#2a3418"
-        color3="#8a742f"
+        range="enabled"
+        rangeEnd={40}
+        rangeStart={0}
         reflection={0.1}
-        wireframe={false}
+        rotationX={0}
+        rotationY={10}
+        rotationZ={50}
         shader="defaults"
-        lightType="3d"
-        brightness={1.1}
-        grain="on"
-        enableTransition={false}
+        type="plane"
+        uAmplitude={1}
+        uDensity={1.3}
+        uFrequency={5.5}
+        uSpeed={0.2}
+        uStrength={4}
+        uTime={0}
+        wireframe={false}
       />
     </ShaderGradientCanvas>
   )

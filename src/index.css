@@ -294,7 +294,7 @@ a {
   inset: -10%;
   z-index: 0;
   pointer-events: none;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -324,7 +324,29 @@ a {
 
 .story__slide {
   max-width: 820px;
-  animation: heroFade 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: storySlideIn 0.9s cubic-bezier(0.16, 1, 0.34, 1) both;
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 1, 1), transform 0.65s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* a manual scroll drives this: the current slide keeps drifting
+   upward as it fades out, then the next one mounts and drifts up
+   into place while fading in (storySlideIn, below) — one continuous
+   upward motion rather than a straight cut */
+.story__slide.is-fading-out {
+  animation: none;
+  opacity: 0;
+  transform: translateY(-32px);
+}
+
+@keyframes storySlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .story__logo {
@@ -1851,6 +1873,12 @@ a {
 
   .story__slide {
     animation: none;
+    transition: none;
+  }
+
+  .story__slide.is-fading-out {
+    opacity: 1;
+    transform: none;
   }
 
   .hero__video,
