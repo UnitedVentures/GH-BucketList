@@ -1,4 +1,12 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import {
+  AnimatePresence,
+  m,
+  animate,
+  useMotionValue,
+  useTransform,
+  useReducedMotion,
+} from 'framer-motion'
 import { featured } from '../data/editions.js'
 import Loader from './Loader.jsx'
 
@@ -35,39 +43,65 @@ const panels = [
 // leaves a step pointing at an undefined entry.
 const LAST_STEP = panels.length + 1
 
-// each step settles the shader a little deeper into the scene
-const shaderBase = (step) =>
-  `translateY(${-step * 1.4}vh) scale(${(1.06 + step * 0.05).toFixed(3)}) rotate(${(step * 0.9).toFixed(2)}deg)`
+const EXIT_MS = 650 // outgoing slide's fade+lift duration
+const ENTER_MS = 900 // incoming slide's fade+settle duration
+const MIN_DWELL = 1000 // ms a slide must stay fully SETTLED before it can move on
+const EASE_OUT = [0.16, 1, 0.34, 1]
+const EASE_IN = [0.4, 0, 1, 1]
 
-const MIN_DWELL = 1000 // ms a slide must stay fully on screen before it can move on
-const FADE_OUT_MS = 650 // outgoing slide's fade+lift duration before the next one mounts
+const slideVariants = {
+  enter: { opacity: 0, y: 32 },
+  center: { opacity: 1, y: 0, transition: { duration: ENTER_MS / 1000, ease: EASE_OUT } },
+  exit: { opacity: 0, y: -32, transition: { duration: EXIT_MS / 1000, ease: EASE_IN } },
+}
+
+const storyVariants = {
+  visible: { opacity: 1, scale: 1 },
+  leaving: { opacity: 0, scale: 1.03, transition: { duration: 0.9, ease: 'easeInOut' } },
+}
 
 export default function Story({ onReveal }) {
   const [step, setStep] = useState(0)
-  const [fading, setFading] = useState(false)
   const [leaving, setLeaving] = useState(false)
   // flips true once the shader has actually painted — the dwell clock
   // starts from here, not from Story's own mount, so a slide can't be
   // considered "shown" before there's anything to see
   const [ready, setReady] = useState(false)
-  const shaderRef = useRef(null)
   const state = useRef({
     step: 0,
     leaving: false,
-    fadingNow: false,
+    transitioning: false,
     shownAt: 0,
-    fadeTimer: 0,
+    settleTimer: 0,
     pendingTimer: 0,
     pendingAdvance: false,
     acc: 0,
-    nudgeTimer: 0,
     lastNudge: 0,
   })
 
+  // shader background: a per-step "settle" position plus a transient
+  // gesture "nudge" layered on top, combined into one transform
+  const baseY = useMotionValue(0) // vh, per-step settle
+  const nudgeY = useMotionValue(0) // px, transient gesture push
+  const scaleMV = useMotionValue(1.06)
+  const rotateMV = useMotionValue(0)
+  const shaderY = useTransform([baseY, nudgeY], ([b, n]) => `calc(${b}vh + ${n}px)`)
+  // MotionConfig's reducedMotion="user" covers the declarative variants
+  // below, but not these imperative animate() calls — guarded by hand
+  const prefersReducedMotion = useReducedMotion()
+
   useEffect(() => {
-    const el = shaderRef.current
-    if (el) el.style.transform = shaderBase(state.current.step)
-  }, [step])
+    if (prefersReducedMotion) {
+      baseY.jump(-step * 1.4)
+      scaleMV.jump(1.06 + step * 0.05)
+      rotateMV.jump(step * 0.9)
+      return
+    }
+    const opts = { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    animate(baseY, -step * 1.4, opts)
+    animate(scaleMV, 1.06 + step * 0.05, opts)
+    animate(rotateMV, step * 0.9, opts)
+  }, [step, baseY, scaleMV, rotateMV, prefersReducedMotion])
 
   useEffect(() => {
     // nothing to step through yet — the shader (and step 0) aren't on
@@ -76,27 +110,26 @@ export default function Story({ onReveal }) {
 
     const s = state.current
 
-    // one step: the current slide lifts and fades out, then the next
-    // one mounts and lifts+fades itself in from below (see the
-    // storySlideIn keyframe / .is-fading-out rule in index.css)
+    // one step forward: React swaps the slide's key, AnimatePresence
+    // handles the exit-then-enter sequencing on its own. The dwell
+    // clock only starts once the new slide is expected to be fully
+    // settled (old exit + new enter), not the instant it's requested.
     const doAdvance = () => {
-      if (s.leaving) return
-      s.fadingNow = true
-      setFading(true)
-      s.fadeTimer = setTimeout(() => {
-        const next = s.step + 1
-        if (next > LAST_STEP) {
-          s.leaving = true
-          setLeaving(true)
-          setTimeout(onReveal, 900)
-          return
-        }
-        s.step = next
+      if (s.leaving || s.transitioning) return
+      const next = s.step + 1
+      if (next > LAST_STEP) {
+        s.leaving = true
+        setLeaving(true)
+        return
+      }
+      s.transitioning = true
+      s.step = next
+      setStep(next)
+      clearTimeout(s.settleTimer)
+      s.settleTimer = setTimeout(() => {
         s.shownAt = Date.now()
-        s.fadingNow = false
-        setStep(next)
-        setFading(false)
-      }, FADE_OUT_MS)
+        s.transitioning = false
+      }, EXIT_MS + ENTER_MS)
     }
 
     // the single entry point for manual scroll/touch/key input. Enforces
@@ -105,7 +138,7 @@ export default function Story({ onReveal }) {
     // never allowed to stack — so a burst of scrolling can only ever
     // move the story one step forward, never skip one.
     const advance = () => {
-      if (s.leaving || s.fadingNow) return
+      if (s.leaving || s.transitioning) return
       const remaining = MIN_DWELL - (Date.now() - s.shownAt)
       if (remaining > 0) {
         if (!s.pendingAdvance) {
@@ -124,16 +157,15 @@ export default function Story({ onReveal }) {
     // the background answers every gesture — a soft push that springs
     // back — so even queued/ignored scrolls are felt
     const nudge = (dir, strength = 18) => {
-      const el = shaderRef.current
-      if (!el || s.leaving) return
+      if (s.leaving) return
       const now = Date.now()
       if (now - s.lastNudge < 90) return
       s.lastNudge = now
-      el.style.transform = `${shaderBase(s.step)} translateY(${-dir * strength}px)`
-      clearTimeout(s.nudgeTimer)
-      s.nudgeTimer = setTimeout(() => {
-        el.style.transform = shaderBase(s.step)
-      }, 260)
+      animate(nudgeY, [-dir * strength, 0], {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+        times: [0, 1],
+      })
     }
 
     const onWheel = (e) => {
@@ -151,14 +183,12 @@ export default function Story({ onReveal }) {
     }
     const onTouchMove = (e) => {
       // live drag feedback under the finger
-      const el = shaderRef.current
-      if (!el || s.leaving) return
+      if (s.leaving) return
       const d = touchY - e.touches[0].clientY
-      el.style.transform = `${shaderBase(s.step)} translateY(${-Math.max(-60, Math.min(60, d * 0.25))}px)`
+      nudgeY.set(-Math.max(-60, Math.min(60, d * 0.25)))
     }
     const onTouchEnd = (e) => {
-      const el = shaderRef.current
-      if (el) el.style.transform = shaderBase(s.step)
+      animate(nudgeY, 0, { duration: 0.5, ease: [0.22, 1, 0.36, 1] })
       if (touchY - e.changedTouches[0].clientY > 50) advance()
     }
     const onKey = (e) => {
@@ -170,7 +200,9 @@ export default function Story({ onReveal }) {
     }
 
     document.body.style.overflow = 'hidden'
-    s.shownAt = Date.now()
+    s.settleTimer = setTimeout(() => {
+      s.shownAt = Date.now()
+    }, ENTER_MS)
     window.addEventListener('wheel', onWheel, { passive: true })
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove', onTouchMove, { passive: true })
@@ -178,70 +210,86 @@ export default function Story({ onReveal }) {
     window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = ''
-      clearTimeout(s.fadeTimer)
+      clearTimeout(s.settleTimer)
       clearTimeout(s.pendingTimer)
-      clearTimeout(s.nudgeTimer)
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)
       window.removeEventListener('touchend', onTouchEnd)
       window.removeEventListener('keydown', onKey)
     }
-  }, [ready, onReveal])
+  }, [ready, nudgeY])
 
   const isTease = step === LAST_STEP
 
   return (
     <Suspense fallback={<Loader />}>
-      <div className={`story${leaving ? ' is-leaving' : ''}`}>
-        <div className="story__shader" ref={shaderRef} aria-hidden="true">
+      <m.div
+        className={`story${leaving ? ' is-leaving' : ''}`}
+        variants={storyVariants}
+        animate={leaving ? 'leaving' : 'visible'}
+        onAnimationComplete={(def) => {
+          if (def === 'leaving') onReveal()
+        }}
+      >
+        <m.div
+          className="story__shader"
+          style={{ y: shaderY, scale: scaleMV, rotate: rotateMV }}
+          aria-hidden="true"
+        >
           <ShaderBg onReady={() => setReady(true)} />
-        </div>
+        </m.div>
         <div className="story__shade" aria-hidden="true" />
 
         <div className="story__content">
-          <div
-            className={`story__slide${fading ? ' is-fading-out' : ''}`}
-            key={step}
-          >
-            {step === 0 && (
-              <>
-                <img
-                  className="story__logo"
-                  src={`${import.meta.env.BASE_URL}images/Logo.svg`}
-                  alt="Bucket List by Go Holidays"
-                />
-                <p className="landing__by">by Go Holidays</p>
-                <p className="landing__tagline serif">
-                  Not all journeys are measured in miles.
-                  <br />
-                  <em>Some are measured in moments.</em>
-                </p>
-              </>
-            )}
+          <AnimatePresence mode="wait">
+            <m.div
+              className="story__slide"
+              key={step}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+            >
+              {step === 0 && (
+                <>
+                  <img
+                    className="story__logo"
+                    src={`${import.meta.env.BASE_URL}images/Logo.svg`}
+                    alt="Bucket List by Go Holidays"
+                  />
+                  <p className="landing__by">by Go Holidays</p>
+                  <p className="landing__tagline serif">
+                    Not all journeys are measured in miles.
+                    <br />
+                    <em>Some are measured in moments.</em>
+                  </p>
+                </>
+              )}
 
-            {step > 0 && !isTease && (
-              <>
-                <p className="eyebrow">{panels[step - 1].eyebrow}</p>
-                <p className="intro__text serif">{panels[step - 1].text}</p>
-              </>
-            )}
+              {step > 0 && !isTease && (
+                <>
+                  <p className="eyebrow">{panels[step - 1].eyebrow}</p>
+                  <p className="intro__text serif">{panels[step - 1].text}</p>
+                </>
+              )}
 
-            {isTease && (
-              <>
-                <p className="eyebrow">Next on the List · {featured.month}</p>
-                <p className="intro__text serif">{featured.description}</p>
-                <p className="intro__hint serif">{featured.tagline}</p>
-              </>
-            )}
-          </div>
+              {isTease && (
+                <>
+                  <p className="eyebrow">Next on the List · {featured.month}</p>
+                  <p className="intro__text serif">{featured.description}</p>
+                  <p className="intro__hint serif">{featured.tagline}</p>
+                </>
+              )}
+            </m.div>
+          </AnimatePresence>
         </div>
 
         <div className="hero__scroll" aria-hidden="true">
           <span>{isTease ? 'Scroll to reveal the destination' : 'Scroll'}</span>
           <span />
         </div>
-      </div>
+      </m.div>
     </Suspense>
   )
 }

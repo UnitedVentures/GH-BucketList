@@ -1,3 +1,18 @@
+import { m } from 'framer-motion'
+
+// shared scroll-reveal: fades + lifts into place once ~20% of the
+// element is in view, and only ever plays once per element
+const REVEAL = {
+  initial: { opacity: 0, y: 36 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 1, ease: [0.16, 1, 0.3, 1] },
+}
+const revealDelay = (seconds) => ({
+  ...REVEAL,
+  transition: { ...REVEAL.transition, delay: seconds },
+})
+
 /* thin compass-rose divider, drawn as lineart */
 export function Ornament() {
   return (
@@ -25,22 +40,26 @@ export function Ornament() {
 export default function ItineraryBody({ itin, reserveUrl, showBackLink = true }) {
   return (
     <div className="wrap">
-      <div className="itin__facts reveal">
+      <m.div className="itin__facts" {...REVEAL}>
         {itin.facts.map((f) => (
           <div className="itin__fact" key={f.label}>
             <p className="itin__factlabel">{f.label}</p>
             <p className="itin__factvalue">{f.value}</p>
           </div>
         ))}
-      </div>
+      </m.div>
 
-      <p className="itin__overview serif reveal">{itin.overview}</p>
+      <m.p className="itin__overview serif" {...REVEAL}>
+        {itin.overview}
+      </m.p>
       <Ornament />
 
       <div className="itin__days">
-        <p className="eyebrow reveal">Day by Day</p>
+        <m.p className="eyebrow" {...REVEAL}>
+          Day by Day
+        </m.p>
         {itin.days.map((d) => (
-          <article className="itin__day reveal" key={d.day}>
+          <m.article className="itin__day" key={d.day} {...REVEAL}>
             <div className="itin__daytext">
               <p className="itin__daynum">{d.day}</p>
               <h3 className="itin__daytitle serif">{d.title}</h3>
@@ -51,21 +70,21 @@ export default function ItineraryBody({ itin, reserveUrl, showBackLink = true })
                 <img src={d.image} alt={d.imageAlt || d.title} loading="lazy" />
               </div>
             )}
-          </article>
+          </m.article>
         ))}
       </div>
 
       <div className="itin__grid">
-        <div className="itin__inclusions reveal">
+        <m.div className="itin__inclusions" {...REVEAL}>
           <p className="eyebrow">The Experience Includes</p>
           <ul>
             {itin.inclusions.map((inc) => (
               <li key={inc}>{inc}</li>
             ))}
           </ul>
-        </div>
+        </m.div>
 
-        <div className="itin__rates reveal" data-delay="1">
+        <m.div className="itin__rates" {...revealDelay(0.15)}>
           <p className="eyebrow">The Investment</p>
           <table>
             <thead>
@@ -86,11 +105,11 @@ export default function ItineraryBody({ itin, reserveUrl, showBackLink = true })
             </tbody>
           </table>
           <p className="itin__ratenote">{itin.rates.note}</p>
-        </div>
+        </m.div>
       </div>
 
       {itin.alternative && (
-        <div className="itin__alt reveal">
+        <m.div className="itin__alt" {...REVEAL}>
           <div className="itin__altimage">
             <img
               src={itin.alternative.image}
@@ -104,12 +123,12 @@ export default function ItineraryBody({ itin, reserveUrl, showBackLink = true })
             <p className="itin__altbody">{itin.alternative.text}</p>
             <p className="itin__altdetail">{itin.alternative.detail}</p>
           </div>
-        </div>
+        </m.div>
       )}
 
       <Ornament />
 
-      <div className="itin__cta reveal">
+      <m.div className="itin__cta" {...REVEAL}>
         <h2 className="serif">
           Ready to <em>tick this one off?</em>
         </h2>
@@ -128,7 +147,7 @@ export default function ItineraryBody({ itin, reserveUrl, showBackLink = true })
             </a>
           )}
         </div>
-      </div>
+      </m.div>
     </div>
   )
 }

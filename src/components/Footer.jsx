@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { m } from 'framer-motion'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -12,7 +13,13 @@ export default function Footer() {
   return (
     <footer className="footer" id="announcements">
       <div className="wrap">
-        <div className="footer__invite reveal">
+        <m.div
+          className="footer__invite"
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        >
           <p className="eyebrow">Announcements</p>
           <h2>
             Be the <em>first</em> to know
@@ -42,7 +49,7 @@ export default function Footer() {
               </button>
             </form>
           )}
-        </div>
+        </m.div>
 
         <div className="footer__base">
           <a className="footer__brand" href="#top">

@@ -1,25 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useMotionValueEvent, useScroll } from 'framer-motion'
 import { featured, whatsapp } from '../data/editions.js'
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [docked, setDocked] = useState(false)
+  // useScroll's scrollY is rAF-batched by Framer's own frame loop (which
+  // Lenis is synced onto — see useLenis.js), so this stays smooth and
+  // accurate without a raw scroll listener or the old setInterval
+  // fallback for webviews that drop scroll events.
+  const { scrollY } = useScroll()
 
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40)
-      // once the itinerary takes over, the destination docks into the bar
-      setDocked(window.scrollY > window.innerHeight * 0.55)
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    // some embedded webviews drop scroll events — reconcile periodically
-    const tick = setInterval(onScroll, 400)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      clearInterval(tick)
-    }
-  }, [])
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setScrolled(latest > 40)
+    // once the itinerary takes over, the destination docks into the bar
+    setDocked(latest > window.innerHeight * 0.55)
+  })
 
   return (
     <header className={`nav${scrolled ? ' is-scrolled' : ''}${docked ? ' is-docked' : ''}`}>

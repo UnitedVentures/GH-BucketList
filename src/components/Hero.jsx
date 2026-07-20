@@ -1,14 +1,28 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { m, useScroll, useTransform } from 'framer-motion'
 import useScramble from '../hooks/useScramble.js'
 import { featured } from '../data/editions.js'
 
 export default function Hero() {
-  const sectionRef = useRef(null)
   const titleRef = useRef(null)
   const videoRef = useRef(null)
   const [videoOk, setVideoOk] = useState(false)
   const title = featured.heroTitle || featured.place
   const scrambledTitle = useScramble(title)
+
+  // Scroll-driven rearrange: as the itinerary slides up over the pinned
+  // hero, the hero content fades and lifts away (0 → 1 over ~¾ screen).
+  // The callback form of useTransform re-reads innerHeight on every
+  // scroll update, so this stays correct across resizes without its
+  // own resize listener.
+  const { scrollY } = useScroll()
+  const heroOpacity = useTransform(scrollY, (latest) =>
+    1 - Math.min(1, Math.max(0, latest / (window.innerHeight * 0.75))),
+  )
+  const heroY = useTransform(
+    scrollY,
+    (latest) => Math.min(1, Math.max(0, latest / (window.innerHeight * 0.75))) * -32,
+  )
 
   // Autoplay can be blocked (low-power mode, data saver). The still
   // image stays until the video genuinely plays; retry once on the
@@ -49,27 +63,9 @@ export default function Hero() {
     return () => window.removeEventListener('resize', fit)
   }, [title])
 
-  // Scroll-driven rearrange: as the itinerary slides up over the pinned
-  // hero, the hero content fades and lifts away (0 → 1 over ~¾ screen).
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    let last = 0
-    const onScroll = () => {
-      const now = Date.now()
-      if (now - last < 40) return
-      last = now
-      const p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.75)))
-      el.style.setProperty('--heroExit', p.toFixed(3))
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
     <>
-      <section className="hero" id="destination" ref={sectionRef}>
+      <section className="hero" id="destination">
         <div className="hero__bgs" aria-hidden="true">
           <div
             className="hero__bg is-active"
@@ -93,7 +89,7 @@ export default function Hero() {
         </div>
         <div className="hero__veil" />
 
-        <div className="wrap hero__content">
+        <m.div className="wrap hero__content" style={{ opacity: heroOpacity, y: heroY }}>
           <p className="hero__edition">
             The {featured.month} Edition · {featured.edition}
           </p>
@@ -101,7 +97,7 @@ export default function Hero() {
             {scrambledTitle}
           </h1>
           <p className="hero__country">{featured.country}</p>
-        </div>
+        </m.div>
 
         <div className="hero__scroll" aria-hidden="true">
           <span>Scroll for the Itinerary</span>
