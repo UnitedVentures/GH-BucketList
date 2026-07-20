@@ -16,11 +16,14 @@ React 18 + Vite. No router lib, no CSS framework, no state lib.
 - `vite.config.js` — `base: './'` (required for Pages sub-path; keep relative URLs)
 - Routing: query param only. `?itinerary=<slug>` → `Itinerary.jsx`; anything else
   runs the story flow. In-page anchors: `#destination`, `#editions`, `#announcements`.
-- `src/App.jsx` — `Story` overlay until revealed → then `Nav + Hero + Band + Upcoming + Footer`.
-  Story state is NOT persisted: refresh restarts it (intentional).
+- `src/App.jsx` — `Story` overlay until revealed → then `Nav + Hero + ItineraryFlow +
+  Footer + MonthRail`. Story state is NOT persisted: refresh restarts it (intentional).
 - `src/components/Story.jsx` — fixed full-screen stepped narrative (wheel/touch/key,
-  debounced ~1s per step, FORWARD-ONLY by design). Steps: logo landing → 3 statements
-  → destination tease → fade into Hero reveal. Shader gradient bg (lazy-loaded).
+  debounced ~1s per step, FORWARD-ONLY by design — no back-stepping, no progress
+  dots). Steps: logo landing → 3 statements → destination tease → fade into Hero
+  reveal. Shader gradient bg (lazy-loaded), and it visibly "nudges" (soft push +
+  spring-back) on every scroll/touch gesture — even ones the step-debounce ignores —
+  so the background always feels responsive to input.
 - `src/components/ShaderBg.jsx` — `@shadergradient/react` (NOT the old `shadergradient`
   package — it bundles a duplicate React and crashes) + @react-three/fiber@8 + three;
   lazy import (three.js is heavy). `Loader.jsx` (plane-on-arc SVG) is the Suspense fallback.
@@ -33,17 +36,26 @@ React 18 + Vite. No router lib, no CSS framework, no state lib.
   destination name centers, Reserve button appears (`.nav.is-docked`).
   NOTE: the embedded preview pane force-suspends <video> playback — verify
   video on a real browser/deployed site, not the pane.
-- `src/components/ItineraryFlow.jsx` — the featured itinerary inline on the main
-  page (facts → overview → days → inclusions/rates → Kruger alt).
-- `Footer.jsx` — Bucket List signup: POST https://formsubmit.co/ajax/<inbox>
-  (currently test inbox ravzeex0@gmail.com — swap before launch; form needed
-  one-time activation link clicked in that inbox). Autoresponse emails the
-  subscriber a link to the itinerary page.
+- `src/components/ItineraryBody.jsx` — the shared facts → overview → days →
+  inclusions/rates → Kruger-alt → CTA markup, used by BOTH `ItineraryFlow.jsx`
+  (inline on the homepage, no header/back-link — `Hero.jsx` is already the page's
+  hero) and `Itinerary.jsx` (standalone `?itinerary=` page, has its own hero +
+  header + back-link). Edit itinerary layout ONCE, here.
+- `src/components/MonthRail.jsx` — fixed vertical rail, right edge, DESKTOP ONLY
+  (hidden ≤900px). Lists all 12 destinations in real calendar order (Jan→Dec,
+  not the Sep→Aug edition cycle) as links to `?itinerary=<slug>`; active item
+  is highlighted gold and self-centers via `scrollIntoView({block:'center'})`
+  whenever `activeSlug` changes. Rendered on the homepage (active = `featured`)
+  and on every itinerary page (active = that page's slug) — so clicking a month
+  and landing on its page shows that same rail with the new month now centered.
+- `Footer.jsx` — currently a LOCAL-ONLY signup form (sets `sent=true` on submit,
+  no network call). Does not POST anywhere yet — wire it up before relying on it.
 - `src/components/Upcoming.jsx` / `Band.jsx` — currently UNUSED (removed from the
   main flow when the page became destination+itinerary only). Files kept.
 - `src/components/Itinerary.jsx` — full page for slugs in `itineraries.js`, else
-  "available soon" page. PDF download via `html2pdf.js` (dynamic import) rendering
-  `src/lib/itineraryDocument.js` (light mode, dark green #22371f on #faf8ee, gold frames).
+  "available soon" page (both render `MonthRail`). PDF download via `html2pdf.js`
+  (dynamic import) rendering `src/lib/itineraryDocument.js` (light mode, dark
+  green #22371f on #faf8ee, gold frames).
 - Hooks: `useScramble` (text scramble on change), `useParallax`, `useReveal`
   (scroll-reveal; timestamp-throttled — do NOT use rAF or IntersectionObserver here,
   both break in embedded/background contexts).
