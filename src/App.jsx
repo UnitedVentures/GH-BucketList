@@ -1,50 +1,40 @@
 import { useState } from 'react'
-import Landing from './components/Landing.jsx'
+import Story from './components/Story.jsx'
 import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
-import Manifesto from './components/Manifesto.jsx'
-import Band from './components/Band.jsx'
-import Upcoming from './components/Upcoming.jsx'
+import ItineraryFlow from './components/ItineraryFlow.jsx'
 import Footer from './components/Footer.jsx'
 import Itinerary from './components/Itinerary.jsx'
-import useReveal from './hooks/useReveal.js'
+import MonthRail from './components/MonthRail.jsx'
+import useLenis from './hooks/useLenis.js'
+import { featured } from './data/editions.js'
 
 export default function App() {
-  // Landing state is deliberately not persisted: every refresh returns
-  // to the Bucket List landing screen.
-  const [entered, setEntered] = useState(false)
-  const [leaving, setLeaving] = useState(false)
+  // The story overlay owns the screen until the destination is revealed.
+  // Not persisted: every refresh starts the story again.
+  const [revealed, setRevealed] = useState(false)
 
-  useReveal(entered)
+  // Smooth-scrolls the main page only. The Story overlay above is a
+  // fixed, non-scrolling screen with its own gesture-driven stepper —
+  // Lenis has nothing to do there, so it's only mounted once revealed.
+  useLenis(revealed)
 
   // Tiny query-param router: "?itinerary=<slug>" renders the itinerary
-  // page directly (deep links keep working). Everything else starts at
-  // the landing screen.
+  // page directly (deep links keep working).
   const slug = new URLSearchParams(window.location.search).get('itinerary')
   if (slug) return <Itinerary slug={slug} />
 
-  if (!entered) {
-    return (
-      <Landing
-        leaving={leaving}
-        onEnter={() => {
-          setLeaving(true)
-          setTimeout(() => setEntered(true), 850)
-        }}
-      />
-    )
-  }
+  if (!revealed) return <Story onReveal={() => setRevealed(true)} />
 
   return (
     <>
       <Nav />
       <main>
         <Hero />
-        <Manifesto />
-        <Band />
-        <Upcoming />
+        <ItineraryFlow />
       </main>
       <Footer />
+      <MonthRail activeSlug={featured.slug} />
     </>
   )
 }

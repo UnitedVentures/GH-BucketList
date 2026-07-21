@@ -7,7 +7,7 @@ const img = (id, w = 2000) =>
  */
 export const itineraries = {
   'south-africa': {
-    edition: 'The September 2026 Edition · Nº 09',
+    edition: 'The September 2026 Edition',
     title: 'Cape Town, Winelands & Big Five Safari',
     location: 'Cape Town · Aquila · South Africa',
     duration: '06 Nights / 07 Days',
