@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useMotionValueEvent, useScroll } from 'framer-motion'
 import { featured, whatsapp } from '../data/editions.js'
+import MonthRail from './MonthRail.jsx'
 
-export default function Nav() {
+export default function Nav({ onNavigate }) {
   const [scrolled, setScrolled] = useState(false)
   const [docked, setDocked] = useState(false)
   // useScroll's scrollY is rAF-batched by Framer's own frame loop (which
@@ -35,22 +36,30 @@ export default function Nav() {
           />
         </a>
 
-        <span className="nav__destination serif" aria-hidden={!docked}>
-          {featured.place}
-        </span>
+        <nav className="nav__links">
+          <a href="#top">Destinations</a>
+          <a href="#itinerary">The Year</a>
+        </nav>
 
-        <a
-          className="btn btn--solid nav__cta nav__reserve"
-          href={whatsapp(
-            `Hello Go Holidays! I'd like to reserve the ${featured.month} Bucket List experience — ${featured.place}.`,
-          )}
-          target="_blank"
-          rel="noopener noreferrer"
-          tabIndex={docked ? 0 : -1}
-        >
-          Reserve the Experience
-        </a>
+        <div className="nav__right">
+          <span className="nav__destination serif" aria-hidden={!docked}>
+            {featured.place}
+          </span>
+
+          <a
+            className="btn nav__cta nav__reserve"
+            href={whatsapp(
+              `Hello Go Holidays! I'd like to reserve the ${featured.month} Bucket List experience — ${featured.place}.`,
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Reserve the Experience
+          </a>
+        </div>
       </div>
+
+      <MonthRail activeSlug={featured.slug} onNavigate={onNavigate} />
     </header>
   )
 }

@@ -1,4 +1,12 @@
 import { m } from 'framer-motion'
+import Icon from './Icon.jsx'
+
+const FACT_ICONS = {
+  Duration: 'calendar',
+  Stay: 'bed',
+  'Meal Plan': 'meal',
+  Validity: 'shield',
+}
 
 // shared scroll-reveal: fades + lifts into place once ~20% of the
 // element is in view, and only ever plays once per element
@@ -37,19 +45,25 @@ export function Ornament() {
  * the standalone `?itinerary=` page and the homepage's inline scroll
  * (where Hero.jsx already plays the role of the page header/hero).
  */
-export default function ItineraryBody({ itin, reserveUrl, showBackLink = true }) {
+export default function ItineraryBody({ itin, reserveUrl, showBackLink = true, onBack }) {
   return (
     <div className="wrap">
-      <m.div className="itin__facts" {...REVEAL}>
+      <m.div className="itin__facts card" {...REVEAL}>
         {itin.facts.map((f) => (
           <div className="itin__fact" key={f.label}>
-            <p className="itin__factlabel">{f.label}</p>
-            <p className="itin__factvalue">{f.value}</p>
+            {/* <Icon name={FACT_ICONS[f.label] || 'sparkle'} /> */}
+            <div>
+              <p className="itin__factlabel">{f.label}</p>
+              <p className="itin__factvalue">{f.value}</p>
+            </div>
           </div>
         ))}
+        {/* <a className="btn btn--solid itin__factscta" href={reserveUrl} target="_blank" rel="noopener noreferrer">
+          Reserve Your Spot
+        </a> */}
       </m.div>
 
-      <m.p className="itin__overview serif" {...REVEAL}>
+      <m.p className="itin__overview" {...REVEAL}>
         {itin.overview}
       </m.p>
       <Ornament />
@@ -79,7 +93,10 @@ export default function ItineraryBody({ itin, reserveUrl, showBackLink = true })
           <p className="eyebrow">The Experience Includes</p>
           <ul>
             {itin.inclusions.map((inc) => (
-              <li key={inc}>{inc}</li>
+              <li key={inc}>
+                <Icon name="check" />
+                {inc}
+              </li>
             ))}
           </ul>
         </m.div>
@@ -142,7 +159,16 @@ export default function ItineraryBody({ itin, reserveUrl, showBackLink = true })
             Reserve the Experience
           </a>
           {showBackLink && (
-            <a className="btn btn--ghost" href="./">
+            <a
+              className="btn btn--ghost"
+              href="./"
+              onClick={(e) => {
+                if (!onBack) return
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+                e.preventDefault()
+                onBack()
+              }}
+            >
               Back to the Collection
             </a>
           )}

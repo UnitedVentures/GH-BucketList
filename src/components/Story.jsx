@@ -31,7 +31,8 @@ const panels = [
     text: (
       <>
         We design each itinerary around authenticity and uniqueness.
-        Breathtaking landscapes and unforgettable moments<em>into the heart and soul of every destination.</em>
+        <br/>Breathtaking landscapes and unforgettable moments<br/>
+        <em>into the heart and soul of every destination.</em>
       </>
     ),
   }
@@ -263,7 +264,7 @@ export default function Story({ onReveal }) {
                     alt="Bucket List by Go Holidays"
                   />
                   <p className="landing__by">by Go Holidays</p>
-                  <p className="landing__tagline serif">
+                  <p className="landing__tagline">
                     Not all journeys are measured in miles.
                     <br />
                     <em>Some are measured in moments.</em>
@@ -274,15 +275,15 @@ export default function Story({ onReveal }) {
               {step > 0 && !isTease && (
                 <>
                   <p className="eyebrow">{panels[step - 1].eyebrow}</p>
-                  <p className="intro__text serif">{panels[step - 1].text}</p>
+                  <p className="intro__text">{panels[step - 1].text}</p>
                 </>
               )}
 
               {isTease && (
                 <>
                   <p className="eyebrow">Next on the List · {featured.month}</p>
-                  <p className="intro__text serif">{featured.description}</p>
-                  <p className="intro__hint serif">{featured.tagline}</p>
+                  <p className="intro__text">{featured.description}</p>
+                  <p className="intro__hint">{featured.tagline}</p>
                 </>
               )}
             </m.div>

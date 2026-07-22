@@ -7,11 +7,18 @@ import MonthRail from './MonthRail.jsx'
 
 const allDestinations = [featured, ...upcoming]
 
-function ItineraryHeader({ onDownload, downloading }) {
+function ItineraryHeader({ activeSlug, onNavigate, onDownload, downloading }) {
+  const goHome = (e) => {
+    if (!onNavigate) return
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+    e.preventDefault()
+    onNavigate(null)
+  }
+
   return (
     <header className="nav is-scrolled">
       <div className="wrap nav__inner">
-        <a className="nav__brand" href="./">
+        <a className="nav__brand" href="./" onClick={goHome}>
           <img
             className="nav__logo"
             src={`${import.meta.env.BASE_URL}images/Logo.svg`}
@@ -29,19 +36,21 @@ function ItineraryHeader({ onDownload, downloading }) {
               {downloading ? 'Preparing your PDF…' : 'Download the Itinerary'}
             </button>
           )}
-          <a className="btn btn--ghost nav__cta" href="./">
+          <a className="btn btn--ghost nav__cta" href="./" onClick={goHome}>
             ← Back to the Collection
           </a>
         </div>
       </div>
+
+      <MonthRail activeSlug={activeSlug} onNavigate={onNavigate} />
     </header>
   )
 }
 
-function ComingSoon({ destination }) {
+function ComingSoon({ destination, onNavigate }) {
   return (
     <div className="itin itin--soon">
-      <ItineraryHeader />
+      <ItineraryHeader activeSlug={destination?.slug} onNavigate={onNavigate} />
       <div
         className="itin__soonbg"
         style={destination ? { backgroundImage: `url(${destination.image})` } : undefined}
@@ -65,7 +74,16 @@ function ComingSoon({ destination }) {
           first to receive it.
         </p>
         <div className="itin__soonactions">
-          <a className="btn btn--solid" href="./">
+          <a
+            className="btn btn--solid"
+            href="./"
+            onClick={(e) => {
+              if (!onNavigate) return
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+              e.preventDefault()
+              onNavigate(null)
+            }}
+          >
             Explore the Collection
           </a>
           {destination && (
@@ -82,17 +100,16 @@ function ComingSoon({ destination }) {
           )}
         </div>
       </main>
-      <MonthRail activeSlug={destination?.slug} />
     </div>
   )
 }
 
-export default function Itinerary({ slug }) {
+export default function Itinerary({ slug, onNavigate }) {
   const itin = itineraries[slug]
   const destination = allDestinations.find((d) => d.slug === slug)
   const [downloading, setDownloading] = useState(false)
 
-  if (!itin) return <ComingSoon destination={destination} />
+  if (!itin) return <ComingSoon destination={destination} onNavigate={onNavigate} />
 
   const reserveUrl = whatsapp(
     `Hello Go Holidays! I'd like to reserve "${itin.title}" — the ${destination?.month ?? ''} Bucket List experience.`,
@@ -129,7 +146,12 @@ export default function Itinerary({ slug }) {
 
   return (
     <div className="itin">
-      <ItineraryHeader onDownload={download} downloading={downloading} />
+      <ItineraryHeader
+        activeSlug={slug}
+        onNavigate={onNavigate}
+        onDownload={download}
+        downloading={downloading}
+      />
 
       <section className="itin__hero">
         <div
@@ -147,10 +169,8 @@ export default function Itinerary({ slug }) {
       </section>
 
       <section className="itin__body">
-        <ItineraryBody itin={itin} reserveUrl={reserveUrl} />
+        <ItineraryBody itin={itin} reserveUrl={reserveUrl} onBack={() => onNavigate?.(null)} />
       </section>
-
-      <MonthRail activeSlug={slug} />
     </div>
   )
 }

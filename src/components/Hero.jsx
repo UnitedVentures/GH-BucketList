@@ -1,12 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { m, useScroll, useTransform } from 'framer-motion'
 import useScramble from '../hooks/useScramble.js'
 import { featured } from '../data/editions.js'
 
 export default function Hero() {
   const titleRef = useRef(null)
-  const videoRef = useRef(null)
-  const [videoOk, setVideoOk] = useState(false)
   const title = featured.heroTitle || featured.place
   const scrambledTitle = useScramble(title)
 
@@ -23,24 +21,6 @@ export default function Hero() {
     scrollY,
     (latest) => Math.min(1, Math.max(0, latest / (window.innerHeight * 0.75))) * -32,
   )
-
-  // Autoplay can be blocked (low-power mode, data saver). The still
-  // image stays until the video genuinely plays; retry once on the
-  // first user interaction.
-  useEffect(() => {
-    const retry = () => {
-      const v = videoRef.current
-      if (v && v.paused) v.play().catch(() => {})
-    }
-    window.addEventListener('pointerdown', retry, { once: true })
-    window.addEventListener('touchstart', retry, { once: true })
-    document.addEventListener('visibilitychange', retry)
-    return () => {
-      window.removeEventListener('pointerdown', retry)
-      window.removeEventListener('touchstart', retry)
-      document.removeEventListener('visibilitychange', retry)
-    }
-  }, [])
 
   // Fit the title to its container on a single line: measure the final
   // title text (not the mid-scramble frame) at the CSS size and scale
@@ -70,21 +50,6 @@ export default function Hero() {
           <div
             className="hero__bg is-active"
             style={{ backgroundImage: `url(${featured.image})` }}
-          />
-          {/* the video fades in only once it can actually play;
-              otherwise the still image above remains */}
-          <video
-            ref={videoRef}
-            className={`hero__video${videoOk ? ' is-ready' : ''}`}
-            src={`${import.meta.env.BASE_URL}videos/south-africa.mp4`}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onPlaying={() => setVideoOk(true)}
-            onError={() => setVideoOk(false)}
-            aria-hidden="true"
           />
         </div>
         <div className="hero__veil" />
