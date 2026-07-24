@@ -6,7 +6,6 @@ import {
   useSpring,
   useReducedMotion,
 } from 'framer-motion'
-import { featured } from '../data/editions.js'
 import Loader from './Loader.jsx'
 import StoryCollage from './StoryCollage.jsx'
 
@@ -20,7 +19,7 @@ const panels = [
     text: (
       <>
         Our carefully curated portfolio of extraordinary journeys are about
-        <em> experiences, </em><br/>
+        <em> experiences, </em><br />
         not just
         <em> destinations.</em>
       </>
@@ -31,16 +30,17 @@ const panels = [
     text: (
       <>
         We design each itinerary around authenticity and uniqueness.
-        Breathtaking landscapes and unforgettable moments<em>into the heart and soul of every destination.</em>
+        Breathtaking landscapes and unforgettable moments
+        <em> into the heart and soul of every destination.</em>
       </>
     ),
-  }
+  },
 ]
 
-// 0 = landing, 1..panels.length = the panels above, +1 = the destination
-// tease. Derived from panels.length so trimming/adding a panel never
-// leaves a step pointing at an undefined entry.
-const LAST_STEP = panels.length + 1
+// 0 = landing, 1..panels.length = the panels above. Once the last panel's
+// dwell completes, the next advance reveals the site directly. Derived
+// from panels.length so trimming/adding a panel never needs a second edit.
+const LAST_STEP = panels.length
 
 const EXIT_MS = 650 // outgoing slide's fade+lift duration
 const ENTER_MS = 900 // incoming slide's fade+settle duration
@@ -225,8 +225,6 @@ export default function Story({ onReveal }) {
     }
   }, [ready, rawA, rawB, prefersReducedMotion])
 
-  const isTease = step === LAST_STEP
-
   return (
     <Suspense fallback={<Loader />}>
       <m.div
@@ -271,18 +269,10 @@ export default function Story({ onReveal }) {
                 </>
               )}
 
-              {step > 0 && !isTease && (
+              {step > 0 && (
                 <>
                   <p className="eyebrow">{panels[step - 1].eyebrow}</p>
                   <p className="intro__text serif">{panels[step - 1].text}</p>
-                </>
-              )}
-
-              {isTease && (
-                <>
-                  <p className="eyebrow">Next on the List · {featured.month}</p>
-                  <p className="intro__text serif">{featured.description}</p>
-                  <p className="intro__hint serif">{featured.tagline}</p>
                 </>
               )}
             </m.div>
@@ -290,7 +280,7 @@ export default function Story({ onReveal }) {
         </div>
 
         <div className="hero__scroll" aria-hidden="true">
-          <span>{isTease ? 'Scroll to reveal the destination' : 'Scroll'}</span>
+          <span>{step === LAST_STEP ? 'Scroll to Enter the Collection' : 'Scroll'}</span>
           <span />
         </div>
       </m.div>
