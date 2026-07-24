@@ -1,13 +1,15 @@
+import BespokeCta from './BespokeCta.jsx'
+
 export default function Manifesto() {
   return (
-    <section className="manifesto" id="initiative">
+    <section className="manifesto" id="project">
       <div className="wrap">
         <div className="manifesto__grid">
           <div className="reveal">
-            {/* <p className="eyebrow">The Bucket List Collection</p> */}
+            <p className="eyebrow">What This Project Is</p>
             <h2>
               Not all journeys are measured in miles.{' '}<br/>
-              <em>Some are measured in moments.</em>
+              <em className="gold-grad">Some are measured in moments.</em>
             </h2>
           </div>
           <div className="manifesto__copy reveal" data-delay="1">
@@ -37,17 +39,21 @@ export default function Manifesto() {
 
         <div className="stats reveal" data-delay="2">
           <div className="stat">
-            <div className="stat__num serif">12</div>
+            <div className="stat__num serif gold-grad">12</div>
             <div className="stat__label">Extraordinary Journeys a Year</div>
           </div>
           <div className="stat">
-            <div className="stat__num serif">1</div>
+            <div className="stat__num serif gold-grad">1</div>
             <div className="stat__label">Ideal Season, Every Time</div>
           </div>
           <div className="stat">
-            <div className="stat__num serif">∞</div>
+            <div className="stat__num serif gold-grad">∞</div>
             <div className="stat__label">Memories That Last a Lifetime</div>
           </div>
+        </div>
+
+        <div className="manifesto__ctawrap">
+          <BespokeCta />
         </div>
       </div>
     </section>

@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { IconChevronLeft } from '@tabler/icons-react'
 import { itineraries } from '../data/itineraries.js'
 import { featured, upcoming, whatsapp } from '../data/editions.js'
 import { renderItineraryElement } from '../lib/itineraryDocument.js'
+import Nav from './Nav.jsx'
+import Footer from './Footer.jsx'
 
 const allDestinations = [featured, ...upcoming]
 
@@ -24,77 +27,53 @@ function Ornament() {
   )
 }
 
-function ItineraryHeader({ onDownload, downloading }) {
-  return (
-    <header className="nav is-scrolled">
-      <div className="wrap nav__inner">
-        <a className="nav__brand" href="./">
-          Bucket <em>List</em>
-        </a>
-        <div className="itin__navactions">
-          {onDownload && (
-            <button
-              type="button"
-              className="btn btn--solid nav__cta"
-              onClick={onDownload}
-              disabled={downloading}
-            >
-              {downloading ? 'Preparing your PDF…' : 'Download the Itinerary'}
-            </button>
-          )}
-          <a className="btn btn--ghost nav__cta" href="./">
-            ← Back to the Collection
-          </a>
-        </div>
-      </div>
-    </header>
-  )
-}
-
 function ComingSoon({ destination }) {
   return (
     <div className="itin itin--soon">
-      <ItineraryHeader />
-      <div
-        className="itin__soonbg"
-        style={destination ? { backgroundImage: `url(${destination.image})` } : undefined}
-        aria-hidden="true"
-      />
-      <div className="itin__soonveil" aria-hidden="true" />
-      <main className="itin__soon wrap">
-        {destination && (
-          <p className="eyebrow">
-            {destination.edition} · {destination.month}
-          </p>
-        )}
-        <h1 className="itin__soontitle serif">
-          The itinerary is <em>in the making</em>
-        </h1>
-        <p className="itin__soontext">
-          {destination
-            ? `The full ${destination.place} itinerary will be available soon.`
-            : 'This itinerary will be available soon.'}{' '}
-          Sign up for announcements or speak to our concierge to be the
-          first to receive it.
-        </p>
-        <div className="itin__soonactions">
-          <a className="btn btn--solid" href="./">
-            Explore the Collection
-          </a>
+      <Nav />
+      <section className="itin__soonhero">
+        <div
+          className="itin__soonbg"
+          style={destination ? { backgroundImage: `url(${destination.image})` } : undefined}
+          aria-hidden="true"
+        />
+        <div className="itin__soonveil" aria-hidden="true" />
+        <main className="itin__soon wrap">
           {destination && (
-            <a
-              className="btn btn--ghost"
-              href={whatsapp(
-                `Hello Go Holidays! I'd like to know more about the ${destination.month} Bucket List experience — ${destination.place}.`,
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ask the Concierge
-            </a>
+            <p className="eyebrow">
+              {destination.edition} · {destination.month}
+            </p>
           )}
-        </div>
-      </main>
+          <h1 className="itin__soontitle serif">
+            The itinerary is <em>in the making</em>
+          </h1>
+          <p className="itin__soontext">
+            {destination
+              ? `The full ${destination.place} itinerary will be available soon.`
+              : 'This itinerary will be available soon.'}{' '}
+            Sign up for announcements or speak to our concierge to be the
+            first to receive it.
+          </p>
+          <div className="itin__soonactions">
+            <a className="btn btn--solid" href="./">
+              Explore the Collection
+            </a>
+            {destination && (
+              <a
+                className="btn btn--ghost"
+                href={whatsapp(
+                  `Hello Go Holidays! I'd like to know more about the ${destination.month} Bucket List experience — ${destination.place}.`,
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ask the Concierge
+              </a>
+            )}
+          </div>
+        </main>
+      </section>
+      <Footer />
     </div>
   )
 }
@@ -141,7 +120,7 @@ export default function Itinerary({ slug }) {
 
   return (
     <div className="itin">
-      <ItineraryHeader onDownload={download} downloading={downloading} />
+      <Nav />
 
       <section className="itin__hero">
         <div
@@ -151,10 +130,32 @@ export default function Itinerary({ slug }) {
           aria-label={itin.title}
         />
         <div className="itin__heroveil" aria-hidden="true" />
+        <a className="itin__back" href="?page=calendar">
+          <IconChevronLeft />
+          Back to the Calendar
+        </a>
         <div className="wrap itin__herocontent">
           <p className="hero__edition">{itin.edition}</p>
           <h1 className="itin__title serif">{itin.title}</h1>
           <p className="hero__country">{itin.location}</p>
+          <div className="itin__heroactions">
+            <a
+              className="btn btn--solid"
+              href={reserveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Reserve the Experience
+            </a>
+            <button
+              type="button"
+              className="btn btn--ghost"
+              onClick={download}
+              disabled={downloading}
+            >
+              {downloading ? 'Preparing your PDF…' : 'Download the Itinerary'}
+            </button>
+          </div>
         </div>
       </section>
 
@@ -257,13 +258,15 @@ export default function Itinerary({ slug }) {
               >
                 Reserve the Experience
               </a>
-              <a className="btn btn--ghost" href="./">
-                Back to the Collection
+              <a className="btn btn--ghost" href="?page=calendar">
+                Back to the Calendar
               </a>
             </div>
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   )
 }
