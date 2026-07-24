@@ -77,7 +77,8 @@ export default function Calendar() {
           className="calendar__stack"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.2}
+          dragElastic={1}
+          dragTransition={{ bounceStiffness: 400, bounceDamping: 40 }}
           onDragEnd={onDragEnd}
         >
           {months.map((mo, i) => {

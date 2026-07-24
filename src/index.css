@@ -2028,6 +2028,10 @@ a {
     display: none;
   }
 
+  .calendar__hint {
+    padding: 0 4.5rem;
+  }
+
   .about__features,
   .testimonials__grid {
     grid-template-columns: 1fr;
