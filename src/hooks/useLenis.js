@@ -6,8 +6,8 @@ import { frame, cancelFrame } from 'framer-motion'
  * Drives smooth scrolling for the main page (Hero → itinerary → footer)
  * via Lenis, synced onto Framer Motion's own frame loop so the two never
  * fight over rAF scheduling. Lenis still animates the *real* window
- * scroll position (not a virtual one), so `window.scrollY` and Framer
- * Motion's `useScroll()` keep working everywhere unchanged.
+ * scroll position (not a virtual one), so `window.scrollY` keeps working
+ * everywhere unchanged.
  *
  * Pass `enabled={false}` (e.g. during the Story overlay, which is a
  * fixed, non-scrolling screen with its own gesture-driven step logic —

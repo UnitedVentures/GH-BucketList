@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { m } from 'framer-motion'
+import { IconBrandInstagram, IconBrandFacebook, IconBrandWhatsapp } from '@tabler/icons-react'
+import { whatsapp } from '../data/editions.js'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -11,29 +12,29 @@ export default function Footer() {
   }
 
   return (
-    <footer className="footer" id="announcements">
+    <footer className="footer" id="contact">
       <div className="wrap">
-        <m.div
-          className="footer__invite"
-          initial={{ opacity: 0, y: 36 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="eyebrow">Announcements</p>
+        <div className="footer__invite reveal">
+          <p className="eyebrow">Contact</p>
           <h2>
-            Be the <em>first</em> to know
+            Let's start <em className="gold-grad">planning</em>
           </h2>
           <p>
-            Sign up for upcoming announcements — new editions, full
-            itineraries and reservation openings, delivered to your inbox.
-            Start ticking off your bucket list, one extraordinary journey
-            at a time.
+            Speak to our concierge directly, or sign up for announcements —
+            new editions, full itineraries and reservation openings,
+            delivered to your inbox. Start ticking off your bucket list,
+            one extraordinary journey at a time.
           </p>
+          <a
+            className="btn btn--ghost footer__whatsapp"
+            href={whatsapp('Hello Go Holidays! I\'d like to know more about the Bucket List Collection.')}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Message Us on WhatsApp
+          </a>
           {sent ? (
-            <p style={{ color: 'var(--gold-soft)', marginTop: '2.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', fontSize: '0.7rem' }}>
-              Thank you — you’ll hear from us soon.
-            </p>
+            <p className="footer__sent">Thank you — you’ll hear from us soon.</p>
           ) : (
             <form className="footer__form" onSubmit={submit}>
               <input
@@ -49,23 +50,30 @@ export default function Footer() {
               </button>
             </form>
           )}
-        </m.div>
+        </div>
 
         <div className="footer__base">
-          <a className="footer__brand" href="#top">
-            Bucket <em>List</em>
+          <a className="footer__brand" href="./">
+            <img
+              src={`${import.meta.env.BASE_URL}images/Logo.svg`}
+              alt="Bucket List by Go Holidays"
+            />
           </a>
           <p>© 2026 Bucket List by Go Holidays · One extraordinary journey at a time</p>
           <div className="footer__social">
-            <a href="https://www.instagram.com/goholidays_srilanka/" aria-label="Instagram">Instagram</a>
-            <a href="https://www.facebook.com/goholidays.srilanka" aria-label="Facebook">Facebook</a>
+            <a href="https://www.instagram.com/goholidays_srilanka/" aria-label="Instagram">
+              <IconBrandInstagram />
+            </a>
+            <a href="https://www.facebook.com/goholidays.srilanka" aria-label="Facebook">
+              <IconBrandFacebook />
+            </a>
             <a
               href="https://wa.me/94772211600"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
             >
-              WhatsApp
+              <IconBrandWhatsapp />
             </a>
           </div>
         </div>

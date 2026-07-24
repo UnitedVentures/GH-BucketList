@@ -6,95 +6,56 @@ React 18 + Vite. No router lib, no CSS framework, no state lib.
 ## Commands
 - `npm run dev` — dev server (port 5173; preview panel launch config: `bucketlist-dev`)
 - `npm run build` — production build to `dist/`
-- Deploy: push to `main` → `.github/workflows/deploy.yml` builds and publishes
-  to GitHub Pages (source = GitHub Actions). Live at
-  https://unitedventures.github.io/GH-BucketList/ (repo UnitedVentures/GH-BucketList;
-  razzy23/BucketList redirects there). Pages CDN caches HTML ~10 min — brief
-  white-screen window right after each deploy is normal (stale HTML → old asset 404).
+- Deploy: push to `main` → `.github/workflows/deploy.yml` builds and publishes to
+  GitHub Pages. Live at https://unitedventures.github.io/GH-BucketList/. Pages CDN
+  caches HTML ~10 min — a brief white-screen right after deploy is normal.
 
 ## Architecture
-- `vite.config.js` — `base: './'` (required for Pages sub-path; keep relative URLs)
-- Routing: query param only. `?itinerary=<slug>` → `Itinerary.jsx`; anything else
-  runs the story flow. In-page anchors: `#destination`, `#editions`, `#announcements`.
-- `src/App.jsx` — `Story` overlay until revealed → then `Nav + Hero + ItineraryFlow +
-  Footer + MonthRail`. Story state is NOT persisted: refresh restarts it (intentional).
-- `src/components/Story.jsx` — fixed full-screen stepped narrative (wheel/touch/key,
-  debounced ~1s per step, FORWARD-ONLY by design — no back-stepping, no progress
-  dots). Steps: logo landing → 3 statements → destination tease → fade into Hero
-  reveal. Shader gradient bg (lazy-loaded), and it visibly "nudges" (soft push +
-  spring-back) on every scroll/touch gesture — even ones the step-debounce ignores —
-  so the background always feels responsive to input.
-- `src/components/ShaderBg.jsx` — `@shadergradient/react` (NOT the old `shadergradient`
-  package — it bundles a duplicate React and crashes) + @react-three/fiber@8 + three;
-  lazy import (three.js is heavy). `Loader.jsx` (plane-on-arc SVG) is the Suspense fallback.
-- `src/components/Hero.jsx` — destination reveal: STICKY (pinned) video hero
-  (`public/videos/south-africa.mp4`, 30s 1080p muted loop, 15MB, faststart;
-  still image shows until the `playing` event fires — real autoplay-block
-  fallback; retries on first interaction/visibilitychange). No buttons.
-  Scroll sets `--heroExit` (content lifts/fades) while `ItineraryFlow` slides
-  over it and Nav docks: wordmark logo shrinks into the Favicon icon,
-  destination name centers, Reserve button appears (`.nav.is-docked`).
-  NOTE: the embedded preview pane force-suspends <video> playback — verify
-  video on a real browser/deployed site, not the pane.
-- `src/components/ItineraryBody.jsx` — the shared facts → overview → days →
-  inclusions/rates → Kruger-alt → CTA markup, used by BOTH `ItineraryFlow.jsx`
-  (inline on the homepage, no header/back-link — `Hero.jsx` is already the page's
-  hero) and `Itinerary.jsx` (standalone `?itinerary=` page, has its own hero +
-  header + back-link). Edit itinerary layout ONCE, here.
-- `src/components/MonthRail.jsx` — fixed vertical rail, right edge, DESKTOP ONLY
-  (hidden ≤900px). Lists all 12 destinations in real calendar order (Jan→Dec,
-  not the Sep→Aug edition cycle) as links to `?itinerary=<slug>`; active item
-  is highlighted gold and self-centers via `scrollIntoView({block:'center'})`
-  whenever `activeSlug` changes. Rendered on the homepage (active = `featured`)
-  and on every itinerary page (active = that page's slug) — so clicking a month
-  and landing on its page shows that same rail with the new month now centered.
-- `Footer.jsx` — currently a LOCAL-ONLY signup form (sets `sent=true` on submit,
-  no network call). Does not POST anywhere yet — wire it up before relying on it.
-- `src/components/Upcoming.jsx` / `Band.jsx` — currently UNUSED (removed from the
-  main flow when the page became destination+itinerary only). Files kept.
-- `src/components/Itinerary.jsx` — full page for slugs in `itineraries.js`, else
-  "available soon" page (both render `MonthRail`). PDF download via `html2pdf.js`
-  (dynamic import) rendering `src/lib/itineraryDocument.js` (light mode, dark
-  green #22371f on #faf8ee, gold frames).
-- Hooks: `useScramble` (text scramble on change), `useParallax`, `useReveal`
-  (scroll-reveal; timestamp-throttled — do NOT use rAF or IntersectionObserver here,
-  both break in embedded/background contexts).
+- `vite.config.js` — `base: './'` (required for the Pages sub-path; keep relative URLs)
+- Routing: query param only. `?itinerary=<slug>` → `Itinerary.jsx`; otherwise the
+  story flow runs. In-page anchors: `#destination`, `#editions`, `#announcements`.
+- `src/App.jsx` — Story overlay until revealed, then Nav + Hero + ItineraryFlow +
+  Footer + MonthRail. Story state is not persisted (refresh restarts it).
+- One component per concern — read each file's own comments for behavior detail
+  before changing it:
+  - `Story.jsx` / `StoryCollage.jsx` / `ShaderBg.jsx` — fixed full-screen intro narrative
+  - `Hero.jsx` — sticky video hero for the featured destination
+  - `ItineraryBody.jsx` — shared facts/overview/days/inclusions/CTA markup, used by
+    both `ItineraryFlow.jsx` (homepage) and `Itinerary.jsx` (standalone page) — edit once
+  - `MonthRail.jsx` — fixed vertical month nav, desktop only
+  - `Itinerary.jsx` — standalone `?itinerary=` page + PDF download (`html2pdf.js`
+    rendering `src/lib/itineraryDocument.js`)
+  - `Footer.jsx` — local-only signup form, not wired to a backend yet
+  - `Upcoming.jsx` / `Band.jsx` — currently unused, kept for later
+  - Hooks: `useScramble`, `useParallax`, `useReveal`, `useLenis`
 
 ## Data (edit these for monthly content — no component changes needed)
-- `src/data/editions.js` — `featured` (hero + tease), `upcoming[11]`, `whatsapp(msg)`
-  → wa.me/94772211600 (Go Holidays). Every entry: slug, month, edition Nº, tagline
-  (must hint the ideal travel month), image (verified Unsplash ID).
-- `src/data/itineraries.js` — full itinerary content keyed by slug (currently
-  only `south-africa`, sourced from the client's docx).
+- `src/data/editions.js` — `featured`, `upcoming[11]`, `whatsapp(msg)` helper
+- `src/data/itineraries.js` — full itinerary content keyed by slug (currently only `south-africa`)
 
-## Design system (all in src/index.css, single file)
-- Palette (CSS vars): ink #0f120a, coal #171b0f (olive darks), cream #f2efe2,
-  gold #bfa04a, gold-soft #e2d194. NO brown/coffee tones (user migrated away).
-- Overlay/veil rgba values are hard-coded olive: rgba(15,18,10,…) and rgba(23,27,15,…).
-- Type: display = 'Great Vibes' calligraphy (titles, logo contexts); serif =
-  Cormorant Garamond (taglines, quotes, day titles); body = Poppins. Script titles
-  need line-height ≥1.1 and no letter-spacing.
-- Brand assets: `public/images/Logo.svg` (wordmark, used in nav + story landing),
-  `Favicon.svg` + `Favicon-512.png`. Reference via `import.meta.env.BASE_URL + 'images/…'`
-  in JSX, `./images/…` in index.html (never `/images/…` — breaks on Pages).
-- Images: Unsplash only, IDs verified via `https://unsplash.com/napi/search/photos?query=…`
-  (avoid `premium_photo-` IDs; always confirm the chosen ID returns 200).
+## Design system (all in src/index.css)
+- Palette: ink `#0f120a`, coal `#171b0f`, cream `#f2efe2`, gold `#bfa04a`,
+  gold-soft `#e2d194`
+- Type: display = 'Great Vibes' script, serif = Cormorant Garamond, body = Poppins
+- Brand assets: `public/images/Logo.svg`, `Favicon.svg` / `Favicon-512.png` —
+  reference via `import.meta.env.BASE_URL + 'images/…'` in JSX, `./images/…` in
+  index.html (never `/images/…` — breaks on Pages)
+- Images: Unsplash only, verify chosen IDs return 200 before using
 
 ## Token efficiency (rtk)
 `rtk` is installed (/opt/homebrew/bin/rtk) — a proxy that compacts CLI output
-before it reaches the model. Prefer it for noisy commands:
-- `rtk git status` / `rtk git log` / `rtk diff` instead of raw git
-- `rtk err npm run build` — show only errors/warnings from a build
-- `rtk ls <dir>`, `rtk tree`, `rtk find`, `rtk grep`, `rtk read <file>` for exploration
-- `rtk json` to compact JSON output (e.g. curl | rtk json)
-Plain commands are fine when full output is genuinely needed (e.g. exact error
-context); default to rtk for routine checks.
+before it reaches the model. Prefer it for noisy commands: `rtk git status`,
+`rtk git log`, `rtk diff`, `rtk err npm run build`, `rtk ls/tree/find/grep/read`.
+Plain commands are fine when full output is genuinely needed.
 
 ## Gotchas
-- The embedded preview panel's screenshot capture freezes routinely (stale frames,
-  ignored scrollTo). Verify via DOM checks (elementFromPoint, getBoundingClientRect)
-  before assuming the site is broken; restart the preview server to recover.
-- User edits files directly between sessions (copy tweaks, commented-out code) —
-  always respect current file state, don't revert.
+- The embedded preview panel's screenshot capture freezes routinely, and
+  programmatic scrolling doesn't stick while Lenis is active. Verify via DOM
+  checks (elementFromPoint, getBoundingClientRect, computed styles) before
+  concluding something is visually broken; restart the preview server if stuck.
+- The user edits files directly between sessions — always check current file
+  state before acting, and don't revert changes you didn't make.
+- Large visual/structural changes have been tried and rolled back before —
+  confirm scope before large-scale rewrites; prefer incremental, reversible steps.
 - Client details: Go Holidays, Sri Lanka. WhatsApp +94 77 221 1600.
   Socials: instagram.com/goholidays_srilanka, facebook.com/goholidays.srilanka.

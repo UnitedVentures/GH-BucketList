@@ -2,13 +2,12 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import {
   AnimatePresence,
   m,
-  animate,
   useMotionValue,
-  useTransform,
+  useSpring,
   useReducedMotion,
 } from 'framer-motion'
-import { featured } from '../data/editions.js'
 import Loader from './Loader.jsx'
+import StoryCollage from './StoryCollage.jsx'
 
 // three.js is heavy — load the shader background lazily and let the
 // Loader plane cover the wait.
@@ -20,7 +19,7 @@ const panels = [
     text: (
       <>
         Our carefully curated portfolio of extraordinary journeys are about
-        <em>experiences,</em>
+        <em> experiences, </em><br />
         not just
         <em> destinations.</em>
       </>
@@ -31,17 +30,17 @@ const panels = [
     text: (
       <>
         We design each itinerary around authenticity and uniqueness.
-        Breathtaking landscapes and unforgettable moments — beyond the
-        ordinary, <em>into the heart and soul of every destination.</em>
+        Breathtaking landscapes and unforgettable moments
+        <em> into the heart and soul of every destination.</em>
       </>
     ),
-  }
+  },
 ]
 
-// 0 = landing, 1..panels.length = the panels above, +1 = the destination
-// tease. Derived from panels.length so trimming/adding a panel never
-// leaves a step pointing at an undefined entry.
-const LAST_STEP = panels.length + 1
+// 0 = landing, 1..panels.length = the panels above. Once the last panel's
+// dwell completes, the next advance reveals the site directly. Derived
+// from panels.length so trimming/adding a panel never needs a second edit.
+const LAST_STEP = panels.length
 
 const EXIT_MS = 650 // outgoing slide's fade+lift duration
 const ENTER_MS = 900 // incoming slide's fade+settle duration
@@ -79,29 +78,24 @@ export default function Story({ onReveal }) {
     lastNudge: 0,
   })
 
-  // shader background: a per-step "settle" position plus a transient
-  // gesture "nudge" layered on top, combined into one transform
-  const baseY = useMotionValue(0) // vh, per-step settle
-  const nudgeY = useMotionValue(0) // px, transient gesture push
-  const scaleMV = useMotionValue(1.06)
-  const rotateMV = useMotionValue(0)
-  const shaderY = useTransform([baseY, nudgeY], ([b, n]) => `calc(${b}vh + ${n}px)`)
+  // The shader is intentionally static: it never reacts to steps or
+  // scroll gestures (that used to cause a "tremor" on transition — the
+  // WebGL canvas being nudged/rescaled every frame). Only the two photo
+  // collage layers (StoryCollage) and the text slide itself now move
+  // with the story; the shader just runs its own built-in animation
+  // undisturbed underneath everything.
+  // Springs, not jump()+animate(): a sustained scroll gesture fires many
+  // wheel events, and re-jumping a plain motion value on each one used
+  // to cancel its in-flight ease-back and snap it — a rapid, visible
+  // "tremor". A spring absorbs repeated re-targeting smoothly instead,
+  // so any number of pushes per second still reads as one fluid motion.
+  const rawA = useMotionValue(0) // px, closer layer's target — stronger/faster
+  const rawB = useMotionValue(0) // px, further layer's target — weaker/slower
+  const collageA = useSpring(rawA, { stiffness: 170, damping: 22, mass: 0.4 })
+  const collageB = useSpring(rawB, { stiffness: 130, damping: 24, mass: 0.5 })
   // MotionConfig's reducedMotion="user" covers the declarative variants
-  // below, but not these imperative animate() calls — guarded by hand
+  // below, but not these imperative motion-value writes — guarded by hand
   const prefersReducedMotion = useReducedMotion()
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      baseY.jump(-step * 1.4)
-      scaleMV.jump(1.06 + step * 0.05)
-      rotateMV.jump(step * 0.9)
-      return
-    }
-    const opts = { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-    animate(baseY, -step * 1.4, opts)
-    animate(scaleMV, 1.06 + step * 0.05, opts)
-    animate(rotateMV, step * 0.9, opts)
-  }, [step, baseY, scaleMV, rotateMV, prefersReducedMotion])
 
   useEffect(() => {
     // nothing to step through yet — the shader (and step 0) aren't on
@@ -154,18 +148,25 @@ export default function Story({ onReveal }) {
       doAdvance()
     }
 
-    // the background answers every gesture — a soft push that springs
-    // back — so even queued/ignored scrolls are felt
-    const nudge = (dir, strength = 18) => {
-      if (s.leaving) return
+    // the photo layers answer every gesture — a soft push that springs
+    // back — so even queued/ignored scrolls are felt. The closer layer
+    // (A) moves further/faster than the further one (B), reading as depth.
+    // nudges the spring's TARGET, not the displayed value — any number
+    // of these per second (a sustained scroll fires many) just smoothly
+    // redirects the spring rather than interrupting/snapping it. The
+    // target itself relaxes back to 0 shortly after input goes quiet.
+    const nudge = (dir) => {
+      if (s.leaving || prefersReducedMotion) return
       const now = Date.now()
-      if (now - s.lastNudge < 90) return
+      if (now - s.lastNudge < 40) return
       s.lastNudge = now
-      animate(nudgeY, [-dir * strength, 0], {
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1],
-        times: [0, 1],
-      })
+      rawA.set(Math.max(-30, Math.min(30, rawA.get() - dir * 9)))
+      rawB.set(Math.max(-14, Math.min(14, rawB.get() - dir * 4)))
+      clearTimeout(s.nudgeSettleTimer)
+      s.nudgeSettleTimer = setTimeout(() => {
+        rawA.set(0)
+        rawB.set(0)
+      }, 260)
     }
 
     const onWheel = (e) => {
@@ -182,13 +183,17 @@ export default function Story({ onReveal }) {
       touchY = e.touches[0].clientY
     }
     const onTouchMove = (e) => {
-      // live drag feedback under the finger
-      if (s.leaving) return
+      // live drag feedback under the finger — the spring's own physics
+      // keep this smooth even as the target updates every touch frame
+      if (s.leaving || prefersReducedMotion) return
+      clearTimeout(s.nudgeSettleTimer)
       const d = touchY - e.touches[0].clientY
-      nudgeY.set(-Math.max(-60, Math.min(60, d * 0.25)))
+      rawA.set(-Math.max(-70, Math.min(70, d * 0.35)))
+      rawB.set(-Math.max(-30, Math.min(30, d * 0.15)))
     }
     const onTouchEnd = (e) => {
-      animate(nudgeY, 0, { duration: 0.5, ease: [0.22, 1, 0.36, 1] })
+      rawA.set(0)
+      rawB.set(0)
       if (touchY - e.changedTouches[0].clientY > 50) advance()
     }
     const onKey = (e) => {
@@ -218,9 +223,7 @@ export default function Story({ onReveal }) {
       window.removeEventListener('touchend', onTouchEnd)
       window.removeEventListener('keydown', onKey)
     }
-  }, [ready, nudgeY])
-
-  const isTease = step === LAST_STEP
+  }, [ready, rawA, rawB, prefersReducedMotion])
 
   return (
     <Suspense fallback={<Loader />}>
@@ -232,13 +235,12 @@ export default function Story({ onReveal }) {
           if (def === 'leaving') onReveal()
         }}
       >
-        <m.div
-          className="story__shader"
-          style={{ y: shaderY, scale: scaleMV, rotate: rotateMV }}
-          aria-hidden="true"
-        >
+        <div className="story__shader" aria-hidden="true">
           <ShaderBg onReady={() => setReady(true)} />
-        </m.div>
+        </div>
+
+        <StoryCollage step={step} yA={collageA} yB={collageB} />
+
         <div className="story__shade" aria-hidden="true" />
 
         <div className="story__content">
@@ -267,18 +269,10 @@ export default function Story({ onReveal }) {
                 </>
               )}
 
-              {step > 0 && !isTease && (
+              {step > 0 && (
                 <>
                   <p className="eyebrow">{panels[step - 1].eyebrow}</p>
                   <p className="intro__text serif">{panels[step - 1].text}</p>
-                </>
-              )}
-
-              {isTease && (
-                <>
-                  <p className="eyebrow">Next on the List · {featured.month}</p>
-                  <p className="intro__text serif">{featured.description}</p>
-                  <p className="intro__hint serif">{featured.tagline}</p>
                 </>
               )}
             </m.div>
@@ -286,7 +280,7 @@ export default function Story({ onReveal }) {
         </div>
 
         <div className="hero__scroll" aria-hidden="true">
-          <span>{isTease ? 'Scroll to reveal the destination' : 'Scroll'}</span>
+          <span>{step === LAST_STEP ? 'Scroll to Enter the Collection' : 'Scroll'}</span>
           <span />
         </div>
       </m.div>
