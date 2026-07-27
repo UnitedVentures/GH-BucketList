@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>One Destination. Every Month. Like No Other.</title>
+
+    <!-- Meta Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '488455493749620');
+      fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
     <meta
       name="description"
       content="Bucket List curates one extraordinary destination every month for a small circle of discerning travellers."
@@ -19,6 +34,17 @@
     <link rel="apple-touch-icon" href="./images/Favicon-512.png" />
   </head>
   <body>
+    <!-- Meta Pixel Code (noscript fallback) -->
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=488455493749620&ev=PageView&noscript=1"
+        alt=""
+      />
+    </noscript>
+    <!-- End Meta Pixel Code -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

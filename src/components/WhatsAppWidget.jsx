@@ -1,4 +1,5 @@
 import { whatsapp } from '../data/editions.js'
+import { trackEvent } from '../lib/metaPixel.js'
 import Icon from './Icon.jsx'
 
 /**
@@ -14,6 +15,7 @@ export default function WhatsAppWidget() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
+      onClick={() => trackEvent('Lead', { content_name: 'WhatsApp Widget' })}
     >
       <Icon name="whatsapp" className="whatsapp-widget__icon" />
     </a>

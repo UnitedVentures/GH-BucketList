@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { IconBrandInstagram, IconBrandFacebook, IconBrandWhatsapp } from '@tabler/icons-react'
 import { whatsapp } from '../data/editions.js'
+import { trackEvent } from '../lib/metaPixel.js'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -8,7 +9,10 @@ export default function Footer() {
 
   const submit = (e) => {
     e.preventDefault()
-    if (email.trim()) setSent(true)
+    if (email.trim()) {
+      setSent(true)
+      trackEvent('CompleteRegistration', { content_name: 'Newsletter Signup' })
+    }
   }
 
   return (
@@ -30,6 +34,7 @@ export default function Footer() {
             href={whatsapp('Hello Go Holidays! I\'d like to know more about the Bucket List Collection.')}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('Lead', { content_name: 'Footer WhatsApp CTA' })}
           >
             Message Us on WhatsApp
           </a>
@@ -72,6 +77,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
+              onClick={() => trackEvent('Lead', { content_name: 'Footer Social WhatsApp Icon' })}
             >
               <IconBrandWhatsapp />
             </a>
