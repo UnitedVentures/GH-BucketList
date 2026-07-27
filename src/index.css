@@ -1910,6 +1910,13 @@ a {
     display: flex;
   }
 
+  /* .nav's own padding wraps the drawer too — without this, its
+     bottom padding renders as a second, less-opaque blurred strip
+     below the drawer's own background, showing as a seam */
+  .nav.is-open {
+    padding-bottom: 0;
+  }
+
   /* dropdown drawer under the bar, toggled by Nav's open state */
   .nav__drawer {
     display: block;

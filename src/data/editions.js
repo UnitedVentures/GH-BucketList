@@ -9,8 +9,8 @@ export const featured = {
   edition: 'Nº 09',
   slug: 'south-africa',
   month: 'September 2026',
-  place: 'South Africa',
-  country: 'Cape Town · Winelands · Safari',
+  place: 'Cape Town · Winelands · Safari',
+  country: 'South Africa',
   image: img('photo-1580060839134-75a5edca2e99', 2400),
 }
 
