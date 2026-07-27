@@ -1585,6 +1585,13 @@ a {
   color: var(--stone);
 }
 
+.itin__ratenote--onrequest {
+  margin-top: 1.8rem;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--gold-soft);
+}
+
 .itin__alt {
   display: grid;
   grid-template-columns: 1fr 1.3fr;

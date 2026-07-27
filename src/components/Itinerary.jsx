@@ -203,24 +203,28 @@ export default function Itinerary({ slug }) {
 
             <div className="itin__rates reveal" data-delay="1">
               <p className="eyebrow">The Investment</p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Stay</th>
-                    <th>Twin Sharing</th>
-                    <th>Single</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {itin.rates.rows.map((r) => (
-                    <tr key={r.tier}>
-                      <td>{r.tier}</td>
-                      <td>{r.twin}</td>
-                      <td>{r.single}</td>
+              {itin.rates.rows.length > 0 ? (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Stay</th>
+                      <th>Twin Sharing</th>
+                      <th>Single</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {itin.rates.rows.map((r) => (
+                      <tr key={r.tier}>
+                        <td>{r.tier}</td>
+                        <td>{r.twin}</td>
+                        <td>{r.single}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="itin__ratenote itin__ratenote--onrequest">Price on Request</p>
+              )}
               <p className="itin__ratenote">{itin.rates.note}</p>
             </div>
           </div>
