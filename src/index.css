@@ -1917,33 +1917,31 @@ a {
     display: flex;
   }
 
-  /* .nav's own padding wraps the drawer too — without this, its
-     bottom padding renders as a second, less-opaque blurred strip
-     below the drawer's own background, showing as a seam */
   .nav.is-open {
     padding-bottom: 0;
   }
 
-  /* dropdown drawer under the bar, toggled by Nav's open state */
   .nav__drawer {
     display: block;
     max-height: 0;
     overflow: hidden;
-    background: rgba(15, 18, 10, 0.97);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid transparent;
     transition: max-height 0.4s ease;
   }
 
   .nav.is-open .nav__drawer {
     max-height: 70vh;
     overflow-y: auto;
-    border-bottom-color: rgba(191, 160, 74, 0.45);
+    /* the gold edge belongs on this outer, height-animated box — it
+       marks the visible 70vh cutoff, not wherever the (possibly
+       taller, scrollable) content inside happens to end */
+    border-bottom: 1px solid rgba(191, 160, 74, 0.45);
   }
 
   .nav__drawerlinks {
     list-style: none;
     padding: 1rem 6vw 0;
+    background: rgba(15, 18, 10, 0.60);
+    backdrop-filter: blur(14px);
   }
 
   .nav__drawerlinks a {
