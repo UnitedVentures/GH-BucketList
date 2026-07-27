@@ -1921,6 +1921,14 @@ a {
     padding-bottom: 0;
   }
 
+  /* more breathing room below the fixed nav than the desktop clamp
+     gives — on mobile the heading sat almost flush against it. Kept
+     modest: .calendar is a hard 100vh with overflow:hidden, so too
+     large an increase clips the swipe hint off short devices */
+  .calendar {
+    padding-top: clamp(6.5rem, 12vh, 8rem);
+  }
+
   .nav__drawer {
     display: block;
     max-height: 0;
