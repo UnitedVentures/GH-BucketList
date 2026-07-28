@@ -34,6 +34,8 @@ function scatter(count, seed) {
     top: `${(rand(i * 2 + 1) * 88).toFixed(1)}%`,
     left: `${(rand(i * 2 + 2) * 88).toFixed(1)}%`,
     size: Math.round(120 + rand(i * 2 + 3) * 130),
+    // a loose scatter of tossed-down polaroids, not a tidy grid
+    rotate: (rand(i * 2 + 4) * 16 - 8).toFixed(1),
   }))
 }
 
@@ -75,13 +77,13 @@ function Layer({ step, count, seedBase, className, driftDuration, travel, y }) {
             exit="exit"
           >
             {tiles.map((t, i) => (
-              <img
+              <div
                 key={i}
-                src={t.src}
-                alt=""
-                loading="lazy"
-                style={{ top: t.top, left: t.left, width: t.size, height: t.size }}
-              />
+                className="story__polaroid"
+                style={{ top: t.top, left: t.left, width: t.size, transform: `rotate(${t.rotate}deg)` }}
+              >
+                <img src={t.src} alt="" loading="lazy" />
+              </div>
             ))}
           </m.div>
         </AnimatePresence>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { IconChevronDown } from '@tabler/icons-react'
+import { IconChevronDown, IconSun, IconMoon } from '@tabler/icons-react'
 import { months } from '../lib/months.js'
+import useTheme from '../hooks/useTheme.js'
 
 // "./" (not "/") throughout: the site is hosted under a sub-path on
 // GitHub Pages, so an absolute root path would resolve to the wrong
@@ -19,6 +20,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [calendarOpen, setCalendarOpen] = useState(false)
+  const [theme, toggleTheme] = useTheme()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -73,6 +75,16 @@ export default function Nav() {
                 <a href={l.href}>{l.label}</a>
               </li>
             ))}
+            <li>
+              <button
+                type="button"
+                className="nav__themetoggle"
+                aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+                onClick={toggleTheme}
+              >
+                {theme === 'light' ? <IconMoon /> : <IconSun />}
+              </button>
+            </li>
           </ul>
         </nav>
         <button
@@ -115,6 +127,12 @@ export default function Nav() {
               <a href={l.href} onClick={closeAll}>{l.label}</a>
             </li>
           ))}
+          <li>
+            <button type="button" className="nav__drawerthemetoggle" onClick={toggleTheme}>
+              {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+              {theme === 'light' ? <IconMoon /> : <IconSun />}
+            </button>
+          </li>
         </ul>
       </div>
     </header>

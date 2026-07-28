@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   AnimatePresence,
   m,
@@ -6,12 +6,7 @@ import {
   useSpring,
   useReducedMotion,
 } from 'framer-motion'
-import Loader from './Loader.jsx'
 import StoryCollage from './StoryCollage.jsx'
-
-// three.js is heavy — load the shader background lazily and let the
-// Loader plane cover the wait.
-const ShaderBg = lazy(() => import('./ShaderBg.jsx'))
 
 const panels = [
   {
@@ -62,10 +57,6 @@ const storyVariants = {
 export default function Story({ onReveal }) {
   const [step, setStep] = useState(0)
   const [leaving, setLeaving] = useState(false)
-  // flips true once the shader has actually painted — the dwell clock
-  // starts from here, not from Story's own mount, so a slide can't be
-  // considered "shown" before there's anything to see
-  const [ready, setReady] = useState(false)
   const state = useRef({
     step: 0,
     leaving: false,
@@ -78,12 +69,8 @@ export default function Story({ onReveal }) {
     lastNudge: 0,
   })
 
-  // The shader is intentionally static: it never reacts to steps or
-  // scroll gestures (that used to cause a "tremor" on transition — the
-  // WebGL canvas being nudged/rescaled every frame). Only the two photo
-  // collage layers (StoryCollage) and the text slide itself now move
-  // with the story; the shader just runs its own built-in animation
-  // undisturbed underneath everything.
+  // Only the two photo collage layers (StoryCollage) and the text
+  // slide move with the story.
   // Springs, not jump()+animate(): a sustained scroll gesture fires many
   // wheel events, and re-jumping a plain motion value on each one used
   // to cancel its in-flight ease-back and snap it — a rapid, visible
@@ -98,9 +85,6 @@ export default function Story({ onReveal }) {
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
-    // nothing to step through yet — the shader (and step 0) aren't on
-    // screen while the Loader is still covering the Suspense boundary
-    if (!ready) return
 
     const s = state.current
 
@@ -223,67 +207,61 @@ export default function Story({ onReveal }) {
       window.removeEventListener('touchend', onTouchEnd)
       window.removeEventListener('keydown', onKey)
     }
-  }, [ready, rawA, rawB, prefersReducedMotion])
+  }, [rawA, rawB, prefersReducedMotion])
 
   return (
-    <Suspense fallback={<Loader />}>
-      <m.div
-        className={`story${leaving ? ' is-leaving' : ''}`}
-        variants={storyVariants}
-        animate={leaving ? 'leaving' : 'visible'}
-        onAnimationComplete={(def) => {
-          if (def === 'leaving') onReveal()
-        }}
-      >
-        <div className="story__shader" aria-hidden="true">
-          <ShaderBg onReady={() => setReady(true)} />
-        </div>
+    <m.div
+      className={`story${leaving ? ' is-leaving' : ''}`}
+      variants={storyVariants}
+      animate={leaving ? 'leaving' : 'visible'}
+      onAnimationComplete={(def) => {
+        if (def === 'leaving') onReveal()
+      }}
+    >
+      <StoryCollage step={step} yA={collageA} yB={collageB} />
 
-        <StoryCollage step={step} yA={collageA} yB={collageB} />
+      <div className="story__shade" aria-hidden="true" />
 
-        <div className="story__shade" aria-hidden="true" />
+      <div className="story__content">
+        <AnimatePresence mode="wait">
+          <m.div
+            className="story__slide"
+            key={step}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+          >
+            {step === 0 && (
+              <>
+                <img
+                  className="story__logo"
+                  src={`${import.meta.env.BASE_URL}images/Logo.svg`}
+                  alt="Bucket List by Go Holidays"
+                />
+                <p className="landing__by">by Go Holidays</p>
+                <p className="landing__tagline serif">
+                  Not all journeys are measured in miles.
+                  <br />
+                  <em>Some are measured in moments.</em>
+                </p>
+              </>
+            )}
 
-        <div className="story__content">
-          <AnimatePresence mode="wait">
-            <m.div
-              className="story__slide"
-              key={step}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-            >
-              {step === 0 && (
-                <>
-                  <img
-                    className="story__logo"
-                    src={`${import.meta.env.BASE_URL}images/Logo.svg`}
-                    alt="Bucket List by Go Holidays"
-                  />
-                  <p className="landing__by">by Go Holidays</p>
-                  <p className="landing__tagline serif">
-                    Not all journeys are measured in miles.
-                    <br />
-                    <em>Some are measured in moments.</em>
-                  </p>
-                </>
-              )}
+            {step > 0 && (
+              <>
+                <p className="eyebrow">{panels[step - 1].eyebrow}</p>
+                <p className="intro__text serif">{panels[step - 1].text}</p>
+              </>
+            )}
+          </m.div>
+        </AnimatePresence>
+      </div>
 
-              {step > 0 && (
-                <>
-                  <p className="eyebrow">{panels[step - 1].eyebrow}</p>
-                  <p className="intro__text serif">{panels[step - 1].text}</p>
-                </>
-              )}
-            </m.div>
-          </AnimatePresence>
-        </div>
-
-        <div className="hero__scroll" aria-hidden="true">
-          <span>{step === LAST_STEP ? 'Scroll to Enter the Collection' : 'Scroll'}</span>
-          <span />
-        </div>
-      </m.div>
-    </Suspense>
+      <div className="hero__scroll" aria-hidden="true">
+        <span>{step === LAST_STEP ? 'Scroll to Enter the Collection' : 'Scroll'}</span>
+        <span />
+      </div>
+    </m.div>
   )
 }

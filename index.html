@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>One Destination. Every Month. Like No Other.</title>
 
+    <!-- Theme (light/dark) — set before first paint so a returning
+         dark-mode visitor never sees a flash of the light default.
+         See src/hooks/useTheme.js, which reads this same attribute. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('bucketlist:theme');
+          document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
     <!-- Meta Pixel Code -->
     <script>
       !function(f,b,e,v,n,t,s)

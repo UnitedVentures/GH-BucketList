@@ -1,17 +1,62 @@
+/* Theme system: light is the default/primary palette (the brand's
+   audience skews older and prefers it), dark is opt-in via the toggle
+   in Nav — see src/hooks/useTheme.js. [data-theme="dark"] below
+   carries the site's original palette forward unchanged.
+
+   Two colors (--ink, --gold) also expose an "-rgb" channel triplet so
+   rgba()-with-opacity usages elsewhere in this file can stay
+   theme-aware too, e.g. rgba(var(--ink-rgb), 0.88).
+
+   --on-photo / --on-photo-dim / --on-photo-gold / --on-gold are
+   intentionally NOT theme variables — they're fixed in both themes.
+   Text sitting over a darkened photo (itinerary hero, bucketgrid
+   cards, the parallax band) or over a solid gold button always needs
+   the same fixed-contrast color regardless of site theme, since the
+   veil/button beneath it doesn't change with the theme either. */
 :root {
-  --ink: #0f120a;
+  --ink-rgb: 248, 244, 233;
+  --ink: rgb(var(--ink-rgb));
+  --coal: #f2ead8;
+  --coal-2: #e9dfc6;
+  --cream: #202b19;
+  --cream-dim: #47543c;
+  --stone: #6d6c4d;
+  /* a richer, more saturated amber-gold than the first pass — that one
+     leaned muddy/bronze at this lightness; more saturation reads as
+     vibrant instead of dull without losing contrast against paper */
+  --gold-rgb: 181, 124, 13;
+  --gold: rgb(var(--gold-rgb));
+  --gold-soft: #d7a325;
+  --line: rgba(var(--gold-rgb), 0.35);
+
+  --on-photo: #f2efe2;
+  --on-photo-dim: #d8d4bf;
+  --on-photo-gold: #e2d194;
+  --on-gold: #14180d;
+
+  /* subtle fractal-noise grain for the light theme's paper background
+     — layered into section backgrounds below, not applied globally,
+     so it never dulls text or the gold accents sitting on top of it */
+  --paper-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E");
+
+  --font-display: 'Lavish', 'Cormorant Garamond', 'Didot', serif;
+  --font-script: 'Libre Baskerville', 'Lavish', serif;
+  --font-body: 'Poppins', 'Helvetica Neue', sans-serif;
+}
+
+[data-theme='dark'] {
+  --ink-rgb: 15, 18, 10;
   --coal: #171b0f;
   --coal-2: #212615;
   --cream: #f2efe2;
   --cream-dim: #d8d4bf;
   --stone: #979272;
-  --gold: #bfa04a;
+  --gold-rgb: 191, 160, 74;
   --gold-soft: #e2d194;
-  --line: rgba(191, 160, 74, 0.28);
-
-  --font-display: 'Lavish', 'Cormorant Garamond', 'Didot', serif;
-  --font-script: 'Libre Baskerville', 'Lavish', serif;
-  --font-body: 'Poppins', 'Helvetica Neue', sans-serif;
+  --line: rgba(var(--gold-rgb), 0.28);
+  /* the paper grain is a light-theme-only detail — dark mode keeps its
+     original, unchanged look */
+  --paper-texture: none;
 }
 
 * {
@@ -25,7 +70,7 @@ html {
 }
 
 body {
-  background: var(--ink);
+  background: var(--paper-texture) var(--ink);
   color: var(--cream);
   font-family: var(--font-body);
   font-weight: 300;
@@ -101,7 +146,9 @@ a {
 
 .btn:hover {
   background: var(--gold);
-  color: var(--ink);
+  /* fixed, not the flipping --ink: this sits on solid gold, which
+     always needs dark content on top regardless of site theme */
+  color: var(--on-gold);
 }
 
 .btn--solid {
@@ -111,7 +158,7 @@ a {
   overflow: hidden;
   background: linear-gradient(120deg, var(--gold) 0%, var(--gold-soft) 50%, var(--gold) 100%);
   border-color: var(--gold);
-  color: var(--ink);
+  color: var(--on-gold);
 }
 
 .btn--solid:hover {
@@ -138,13 +185,30 @@ a {
 }
 
 .btn--ghost {
-  border-color: rgba(244, 238, 228, 0.35);
+  border-color: rgba(var(--gold-rgb), 0.4);
 }
 
 .btn--ghost:hover {
   border-color: var(--cream);
   background: var(--cream);
   color: var(--ink);
+}
+
+/* the two ghost buttons that sit directly on a hero photo (fixed-dark
+   veil in both themes) need the same fixed --on-photo treatment as
+   the rest of that hero's text — the base .btn--ghost above is fine
+   flipping normally since its other uses (footer, itin CTA) sit on
+   the regular page background, not a photo */
+.itin__heroactions .btn--ghost,
+.itin__soonactions .btn--ghost {
+  color: var(--on-photo);
+}
+
+.itin__heroactions .btn--ghost:hover,
+.itin__soonactions .btn--ghost:hover {
+  border-color: var(--on-photo);
+  background: var(--on-photo);
+  color: var(--on-gold);
 }
 
 /* reveal on scroll */
@@ -195,7 +259,8 @@ a {
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(55% 45% at 78% 8%, rgba(191, 160, 74, 0.06), transparent 70%),
+    var(--paper-texture),
+    radial-gradient(55% 45% at 78% 8%, rgba(var(--gold-rgb), 0.06), transparent 70%),
     var(--ink);
   /* opacity/scale on leave are driven by Framer Motion (storyVariants
      in Story.jsx) via inline style, not CSS — no transition here */
@@ -205,25 +270,14 @@ a {
   pointer-events: none;
 }
 
-/* intentionally static: never nudged or rescaled by steps/scroll —
-   that was the source of a "tremor" feel on every transition. Its own
-   internal shader animation keeps it alive underneath everything else. */
-.story__shader {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.story__shader canvas {
-  display: block;
-}
-
-/* two depth layers of scattered destination photos between the shader
-   and the shade veil — see StoryCollage.jsx. Each layer drifts upward
+/* two depth layers of scattered destination photos, each styled as a
+   loose polaroid — see StoryCollage.jsx. Each layer drifts upward
    continuously via its own CSS animation (untouched by React/Framer),
    while the inner track layers a scroll-gesture parallax nudge on top
-   via Framer Motion (yA/yB from Story.jsx). */
+   via Framer Motion (yA/yB from Story.jsx). No shader and no dark
+   shade veil anymore: the paper background carries the scene now, so
+   the polaroids just sit on top of it at full brightness rather than
+   needing to be darkened for text to read over them. */
 .story__collage {
   position: absolute;
   inset: -18% -6%;
@@ -236,11 +290,11 @@ a {
 }
 
 .story__collage--b {
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .story__collage--a {
-  opacity: 0.8;
+  opacity: 0.95;
 }
 
 .story__collage-track {
@@ -258,10 +312,22 @@ a {
   inset: 0;
 }
 
-.story__collage img {
+/* the polaroid frame itself — a fixed warm-white mat regardless of
+   theme (a physical printed photo border isn't something that should
+   flip dark in dark mode), with a thicker foot like a real polaroid */
+.story__polaroid {
   position: absolute;
+  background: #f7f2e4;
+  padding: 8px 8px 26px;
+  box-shadow: 0 16px 34px -12px rgba(0, 0, 0, 0.5);
+}
+
+.story__polaroid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  filter: saturate(0.85) brightness(0.8);
+  filter: saturate(0.92);
 }
 
 @keyframes collageDrift {
@@ -273,14 +339,16 @@ a {
   }
 }
 
-/* keeps the shader moody enough for cream text, and settles the
-   collage photos into the same tone */
+/* a soft halo in the page's own background tone (not a dark veil
+   anymore) behind the text — without it, a busy polaroid photo can
+   randomly scatter directly behind the tagline and fight it for
+   legibility, since there's no full-bleed shade doing that job now */
 .story__shade {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(ellipse 65% 55% at 50% 50%, rgba(15, 18, 10, 0.82) 0%, rgba(15, 18, 10, 0.5) 60%, rgba(15, 18, 10, 0.22) 100%);
+  background: radial-gradient(ellipse 62% 52% at 50% 50%, rgba(var(--ink-rgb), 0.92) 0%, rgba(var(--ink-rgb), 0.6) 55%, rgba(var(--ink-rgb), 0) 100%);
 }
 
 .story__content {
@@ -304,38 +372,6 @@ a {
   display: block;
 }
 
-/* ---------- loader ---------- */
-
-.loader {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.4rem;
-  background: var(--ink);
-}
-
-.loader svg {
-  width: min(320px, 70vw);
-  height: auto;
-}
-
-.loader__text {
-  font-size: 0.62rem;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  color: var(--stone);
-  animation: loaderPulse 2.2s ease-in-out infinite;
-}
-
-@keyframes loaderPulse {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 1; }
-}
-
 .intro__text {
   font-style: italic;
   font-weight: 400;
@@ -356,15 +392,30 @@ a {
   inset: 0 0 auto 0;
   z-index: 50;
   padding: 1.9rem 0;
-  transition: background 0.5s ease, padding 0.5s ease, border-color 0.5s ease;
+  transition: background 0.5s ease, padding 0.5s ease, border-color 0.5s ease, backdrop-filter 0.5s ease;
   border-bottom: 1px solid transparent;
+  /* light theme only (overridden to none below): the nav can sit
+     unscrolled over a hero photo (itinerary/coming-soon pages), whose
+     veil is always dark regardless of theme. Nav text/icons use the
+     normal flipping --cream, so in light mode they need a solid-enough
+     paper scrim under them to stay legible against any photo — dark
+     mode's hero veil is already dark enough for its light --cream to
+     read against directly, so it keeps the original fully-transparent
+     bar (overridden below) */
+  background: rgba(var(--ink-rgb), 0.78);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme='dark'] .nav {
+  background: none;
+  backdrop-filter: none;
 }
 
 .nav.is-scrolled {
-  background: rgba(15, 18, 10, 0.88);
+  background: rgba(var(--ink-rgb), 0.88);
   backdrop-filter: blur(14px);
   padding: 1.1rem 0;
-  border-bottom-color: rgba(191, 160, 74, 0.45);
+  border-bottom-color: rgba(var(--gold-rgb), 0.45);
 }
 
 .nav__inner {
@@ -420,6 +471,51 @@ a {
   width: 100%;
 }
 
+/* ---------- theme toggle ---------- */
+
+.nav__themetoggle {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--gold);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav__themetoggle:hover {
+  color: var(--gold-soft);
+}
+
+.nav__themetoggle svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+.nav__drawerthemetoggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.nav__drawerthemetoggle svg {
+  width: 18px;
+  height: 18px;
+  color: var(--gold);
+}
+
 /* ---------- calendar dropdown (desktop) ---------- */
 
 .nav__item {
@@ -473,7 +569,7 @@ a {
   display: grid;
   grid-template-columns: repeat(2, auto);
   gap: 0.2rem 2.4rem;
-  background: rgba(15, 18, 10, 0.98);
+  background: rgba(var(--ink-rgb), 0.98);
   border: 1px solid var(--line);
   padding: 1.2rem 1.6rem;
   white-space: nowrap;
@@ -538,6 +634,10 @@ a {
 /* ---------- hero-style labels (shared by Story's tease-free intro
    and Itinerary.jsx's per-destination hero) ---------- */
 
+/* .hero__edition/__country only ever sit over the itinerary hero
+   photo, whose veil is fixed-dark in both themes — so unlike most
+   text in this file, these use the fixed --on-photo-* colors instead
+   of the flipping --gold-soft/--cream-dim */
 .hero__edition {
   display: inline-flex;
   align-items: center;
@@ -545,7 +645,7 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: var(--gold-soft);
+  color: var(--on-photo-gold);
   font-weight: 400;
 }
 
@@ -554,7 +654,7 @@ a {
   content: '';
   width: 52px;
   height: 1px;
-  background: var(--gold);
+  background: var(--on-photo-gold);
   opacity: 0.6;
 }
 
@@ -563,7 +663,7 @@ a {
   font-size: 0.78rem;
   letter-spacing: 0.58em;
   text-transform: uppercase;
-  color: var(--cream-dim);
+  color: var(--on-photo-dim);
   font-weight: 300;
 }
 
@@ -609,7 +709,8 @@ a {
 .manifesto {
   padding: 9rem 0 8rem;
   background:
-    radial-gradient(60% 50% at 80% 0%, rgba(191, 160, 74, 0.07), transparent 70%),
+    var(--paper-texture),
+    radial-gradient(60% 50% at 80% 0%, rgba(var(--gold-rgb), 0.07), transparent 70%),
     var(--ink);
 }
 
@@ -712,7 +813,7 @@ a {
 
 .bespoke-cta-section {
   padding: 7rem 0;
-  background: var(--coal);
+  background: var(--paper-texture) var(--coal);
 }
 
 /* ---------- our bucket list calendar (swipeable months banner) ---------- */
@@ -731,7 +832,8 @@ a {
   padding: clamp(4.5rem, 9vh, 6.5rem) 0 clamp(1.2rem, 3vh, 2.2rem);
   overflow: hidden;
   background:
-    radial-gradient(60% 45% at 50% 0%, rgba(191, 160, 74, 0.07), transparent 70%),
+    var(--paper-texture),
+    radial-gradient(60% 45% at 50% 0%, rgba(var(--gold-rgb), 0.07), transparent 70%),
     var(--ink);
 }
 
@@ -814,27 +916,21 @@ a {
 
 /* corner marks only, sitting a little clear of the photo rather than
    a full rectangle around it */
+/* same woven double-rectangle treatment as .bucketgrid__card */
 .calendar__card.is-active::before,
 .calendar__card.is-active::after {
   content: '';
   position: absolute;
-  width: 22px;
-  height: 22px;
+  border: 1px solid var(--gold);
   pointer-events: none;
 }
 
 .calendar__card.is-active::before {
-  top: -6px;
-  left: -6px;
-  border-top: 1px solid var(--gold);
-  border-left: 1px solid var(--gold);
+  inset: -5px 5px -5px 5px;
 }
 
 .calendar__card.is-active::after {
-  bottom: -6px;
-  right: -6px;
-  border-bottom: 1px solid var(--gold);
-  border-right: 1px solid var(--gold);
+  inset: 5px -5px 5px -5px;
 }
 
 .calendar__card.is-active .calendar__cardveil {
@@ -924,7 +1020,7 @@ a {
 
 .bucketgrid {
   padding: 11rem 0 7rem;
-  background: var(--ink);
+  background: var(--paper-texture) var(--ink);
 }
 
 .bucketgrid__head {
@@ -968,29 +1064,26 @@ a {
      visible or they'd be clipped */
 }
 
+/* two offset rectangles, not a single frame: one narrower-but-taller,
+   one wider-but-shorter than the card (10px either way), so on hover
+   they read as a pair of woven, slightly-askew frame lines rather
+   than a plain box outline */
 .bucketgrid__card::before,
 .bucketgrid__card::after {
   content: '';
   position: absolute;
-  width: 22px;
-  height: 22px;
+  border: 1px solid var(--gold);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.35s ease;
 }
 
 .bucketgrid__card::before {
-  top: -6px;
-  left: -6px;
-  border-top: 1px solid var(--gold);
-  border-left: 1px solid var(--gold);
+  inset: -5px 5px -5px 5px;
 }
 
 .bucketgrid__card::after {
-  bottom: -6px;
-  right: -6px;
-  border-bottom: 1px solid var(--gold);
-  border-right: 1px solid var(--gold);
+  inset: 5px -5px 5px -5px;
 }
 
 .bucketgrid__card:hover::before,
@@ -1010,11 +1103,13 @@ a {
   background: linear-gradient(180deg, rgba(15, 18, 10, 0.45) 0%, rgba(15, 18, 10, 0.55) 45%, rgba(15, 18, 10, 0.94) 100%);
 }
 
+/* fixed --on-photo-* throughout: these all sit on the card's own
+   fixed-dark .bucketgrid__cardveil gradient, not the page background */
 .bucketgrid__cardmonth {
   font-size: 0.6rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--gold-soft);
+  color: var(--on-photo-gold);
 }
 
 .bucketgrid__cardplace {
@@ -1025,14 +1120,14 @@ a {
   margin: 0.5rem 0 0.3rem;
   font-size: clamp(1rem, 4vw, 1.7rem);
   line-height: 1.15;
-  color: var(--cream);
+  color: var(--on-photo);
 }
 
 .bucketgrid__cardcountry {
   font-size: 0.6rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--cream-dim);
+  color: var(--on-photo-dim);
 }
 
 .bucketgrid__cardlink {
@@ -1043,7 +1138,7 @@ a {
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--cream);
+  color: var(--on-photo);
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -1100,13 +1195,15 @@ a {
 .whatsapp-widget__icon {
   width: 28px;
   height: 28px;
-  color: var(--ink);
+  /* fixed: sits on a solid gold circle in both themes */
+  color: var(--on-gold);
 }
 
 .about {
   padding: 11rem 0 7rem;
   background:
-    radial-gradient(55% 45% at 15% 100%, rgba(191, 160, 74, 0.06), transparent 70%),
+    var(--paper-texture),
+    radial-gradient(55% 45% at 15% 100%, rgba(var(--gold-rgb), 0.06), transparent 70%),
     var(--ink);
 }
 
@@ -1157,7 +1254,7 @@ a {
 
 .testimonials {
   padding: 11rem 0 7rem;
-  background: var(--coal);
+  background: var(--paper-texture) var(--coal);
 }
 
 .testimonials h2 {
@@ -1193,7 +1290,7 @@ a {
   grid-column: 1 / -1;
   padding: 3.2rem;
   background:
-    radial-gradient(60% 90% at 0% 0%, rgba(191, 160, 74, 0.09), transparent 70%),
+    radial-gradient(60% 90% at 0% 0%, rgba(var(--gold-rgb), 0.09), transparent 70%),
     var(--ink);
   border-color: var(--line);
 }
@@ -1285,6 +1382,7 @@ a {
   background: rgba(15, 18, 10, 0.7);
 }
 
+/* fixed --on-photo(-gold): sits on .band__veil, a fixed-dark overlay */
 .band blockquote {
   font-family: var(--font-display);
   font-style: italic;
@@ -1293,7 +1391,7 @@ a {
   line-height: 1.45;
   max-width: 21ch;
   margin: 2rem auto 0;
-  color: var(--cream);
+  color: var(--on-photo);
 }
 
 .band cite {
@@ -1304,14 +1402,14 @@ a {
   font-size: 0.64rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: var(--gold-soft);
+  color: var(--on-photo-gold);
 }
 
 /* ---------- itinerary page ---------- */
 
 .itin {
   min-height: 100vh;
-  background: var(--ink);
+  background: var(--paper-texture) var(--ink);
 }
 
 .itin__hero {
@@ -1351,6 +1449,7 @@ a {
 .itin__herocontent > *:nth-child(3) { animation-delay: 0.28s; }
 .itin__herocontent > *:nth-child(4) { animation-delay: 0.42s; }
 
+/* fixed --on-photo-*: sits over the hero photo's fixed .itin__heroveil */
 .itin__back {
   position: absolute;
   top: clamp(6rem, 13vh, 7.5rem);
@@ -1363,7 +1462,7 @@ a {
   font-weight: 400;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--cream-dim);
+  color: var(--on-photo-dim);
   transition: color 0.3s ease, gap 0.3s ease;
 }
 
@@ -1374,7 +1473,7 @@ a {
 }
 
 .itin__back:hover {
-  color: var(--cream);
+  color: var(--on-photo);
   gap: 0.8rem;
 }
 
@@ -1392,7 +1491,7 @@ a {
   line-height: 1.1;
   margin-top: 1.4rem;
   margin-bottom: 1.2rem;
-  color: var(--cream);
+  color: var(--on-photo);
   text-shadow: 0 6px 40px rgba(0, 0, 0, 0.45);
 }
 
@@ -1443,7 +1542,7 @@ a {
   gap: clamp(2rem, 5vw, 5rem);
   align-items: center;
   padding: 3rem 0;
-  border-bottom: 1px solid rgba(191, 160, 74, 0.14);
+  border-bottom: 1px solid rgba(var(--gold-rgb), 0.14);
 }
 
 .itin__day:last-child {
@@ -1475,12 +1574,18 @@ a {
   max-width: 58ch;
 }
 
-/* gold frame with a small mat gap between stroke and photograph */
+/* gold-gradient frame with a small mat gap between stroke and
+   photograph. The mat border runs on a diagonal gradient (border-image,
+   since border-color can't take one), and the corner marks are built
+   from two gradient bars rather than a plain border-top/border-left,
+   so the whole frame reads as a faceted, jewelled edge instead of a
+   single flat gold line */
 .itin__dayimage,
 .itin__altimage {
   position: relative;
   padding: 7px;
-  border: 1px solid rgba(191, 160, 74, 0.55);
+  border: 1px solid transparent;
+  border-image: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 50%, var(--gold) 100%) 1;
 }
 
 .itin__dayimage::before,
@@ -1489,25 +1594,27 @@ a {
 .itin__altimage::after {
   content: '';
   position: absolute;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   pointer-events: none;
 }
 
 .itin__dayimage::before,
 .itin__altimage::before {
-  top: -5px;
-  left: -5px;
-  border-top: 1px solid var(--gold);
-  border-left: 1px solid var(--gold);
+  top: -7px;
+  left: -7px;
+  background:
+    linear-gradient(90deg, var(--gold) 0%, var(--gold-soft) 100%) top left / 100% 2px no-repeat,
+    linear-gradient(180deg, var(--gold) 0%, var(--gold-soft) 100%) top left / 2px 100% no-repeat;
 }
 
 .itin__dayimage::after,
 .itin__altimage::after {
-  bottom: -5px;
-  right: -5px;
-  border-bottom: 1px solid var(--gold);
-  border-right: 1px solid var(--gold);
+  bottom: -7px;
+  right: -7px;
+  background:
+    linear-gradient(270deg, var(--gold) 0%, var(--gold-soft) 100%) bottom right / 100% 2px no-repeat,
+    linear-gradient(0deg, var(--gold) 0%, var(--gold-soft) 100%) bottom right / 2px 100% no-repeat;
 }
 
 .itin__dayimage img {
@@ -1536,7 +1643,7 @@ a {
   padding: 0.85rem 0 0.85rem 2rem;
   font-size: 0.88rem;
   color: var(--cream-dim);
-  border-bottom: 1px solid rgba(191, 160, 74, 0.12);
+  border-bottom: 1px solid rgba(var(--gold-rgb), 0.12);
 }
 
 .itin__inclusions li::before {
@@ -1567,7 +1674,7 @@ a {
 .itin__rates td {
   padding: 1rem 0.8rem 1rem 0;
   color: var(--cream-dim);
-  border-bottom: 1px solid rgba(191, 160, 74, 0.12);
+  border-bottom: 1px solid rgba(var(--gold-rgb), 0.12);
 }
 
 .itin__rates td:nth-child(2),
@@ -1704,22 +1811,27 @@ a {
 .itin__soon > *:nth-child(3) { animation-delay: 0.28s; }
 .itin__soon > *:nth-child(4) { animation-delay: 0.42s; }
 
+/* fixed --on-photo-*: sits on the fixed-dark .itin__soonveil. Note
+   .itin__soontitle previously had no explicit color and relied on
+   inheriting body text — harmless while body text happened to equal
+   this fixed value, but broke once the two could diverge by theme */
 .itin__soontitle {
   font-weight: 400;
   font-size: clamp(2.4rem, 5vw, 4rem);
   line-height: 1.15;
   margin-top: 1.4rem;
+  color: var(--on-photo);
 }
 
 .itin__soontitle em {
   font-style: italic;
-  color: var(--gold-soft);
+  color: var(--on-photo-gold);
 }
 
 .itin__soontext {
   margin-top: 1.4rem;
   font-size: 0.9rem;
-  color: var(--cream-dim);
+  color: var(--on-photo-dim);
 }
 
 .itin__soonactions {
@@ -1733,7 +1845,7 @@ a {
 /* ---------- footer ---------- */
 
 .footer {
-  background: var(--ink);
+  background: var(--paper-texture) var(--ink);
   border-top: 1px solid var(--line);
   padding: 7rem 0 3rem;
 }
@@ -1807,7 +1919,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  border-top: 1px solid rgba(191, 160, 74, 0.14);
+  border-top: 1px solid rgba(var(--gold-rgb), 0.14);
   padding-top: 2.4rem;
   font-size: 0.66rem;
   letter-spacing: 0.22em;
@@ -1942,13 +2054,13 @@ a {
     /* the gold edge belongs on this outer, height-animated box — it
        marks the visible 70vh cutoff, not wherever the (possibly
        taller, scrollable) content inside happens to end */
-    border-bottom: 1px solid rgba(191, 160, 74, 0.45);
+    border-bottom: 1px solid rgba(var(--gold-rgb), 0.45);
   }
 
   .nav__drawerlinks {
     list-style: none;
     padding: 1rem 6vw 0;
-    background: rgba(15, 18, 10, 0.60);
+    background: rgba(var(--ink-rgb), 0.60);
     backdrop-filter: blur(14px);
   }
 
@@ -1959,7 +2071,7 @@ a {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--cream-dim);
-    border-bottom: 1px solid rgba(191, 160, 74, 0.14);
+    border-bottom: 1px solid rgba(var(--gold-rgb), 0.14);
   }
 
   /* calendar item in the drawer: the label navigates as usual, the
@@ -1967,7 +2079,7 @@ a {
   .nav__drawercalendarrow {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgba(191, 160, 74, 0.14);
+    border-bottom: 1px solid rgba(var(--gold-rgb), 0.14);
   }
 
   .nav__drawercalendarrow a {
@@ -2012,7 +2124,7 @@ a {
     letter-spacing: 0.06em;
     text-transform: none;
     color: var(--stone);
-    border-bottom: 1px solid rgba(191, 160, 74, 0.08);
+    border-bottom: 1px solid rgba(var(--gold-rgb), 0.08);
   }
 
   .nav__drawermonths a span {
