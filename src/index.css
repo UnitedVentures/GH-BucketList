@@ -2034,11 +2034,18 @@ a {
   }
 
   /* more breathing room below the fixed nav than the desktop clamp
-     gives — on mobile the heading sat almost flush against it. Kept
-     modest: .calendar is a hard 100vh with overflow:hidden, so too
-     large an increase clips the swipe hint off short devices */
+     gives — real iOS Safari still clipped the script-font heading
+     under the opaque nav at the previous value. .calendar is a hard
+     100vh with overflow:hidden, so the extra top clearance is paid
+     for by trimming .calendar__stackwrap's margin-top below (net
+     content height stays flat — no risk of the hint clipping off
+     short devices) */
   .calendar {
-    padding-top: clamp(6.5rem, 12vh, 8rem);
+    padding-top: clamp(8rem, 14vh, 9.5rem);
+  }
+
+  .calendar__stackwrap {
+    margin-top: clamp(1rem, 2.5vh, 1.8rem);
   }
 
   .nav__drawer {
