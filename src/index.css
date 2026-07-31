@@ -212,7 +212,7 @@ a {
   letter-spacing: 0.34em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.45s ease, color 0.45s ease;
+  transition: background 0.45s ease-in-out, color 0.45s ease-in-out, border-color 0.45s ease-in-out;
 }
 
 .btn:hover {
@@ -248,9 +248,9 @@ a {
   /* a warm champagne sheen, not a flat white flashlight — reads as
      light glinting off the gold itself rather than a foreign color
      laid over it */
-  background: radial-gradient(90px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 241, 199, 0.55), transparent 70%);
+  background: radial-gradient(90px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 225, 135, 0.55), transparent 60%);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.35s ease-in-out;
   pointer-events: none;
 }
 
