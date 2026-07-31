@@ -1236,14 +1236,21 @@ a {
 
 /* ---------- floating whatsapp widget ---------- */
 
-.whatsapp-widget {
+.whatsapp-widget-wrap {
   position: fixed;
   right: clamp(1.2rem, 3vw, 2rem);
   bottom: clamp(1.2rem, 3vw, 2rem);
   z-index: 55;
   display: flex;
   align-items: center;
+  gap: 0.7rem;
+}
+
+.whatsapp-widget {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  flex: none;
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -1262,6 +1269,31 @@ a {
   height: 28px;
   /* fixed: sits on a solid gold circle in both themes */
   color: var(--on-gold);
+}
+
+/* the idle-triggered greeting pill (see useWhatsAppGreeting) — a fixed
+   warm-white "speech bubble" rather than a theme-flipping color, since
+   it should always read as a chat bubble regardless of site theme,
+   the same way the icon's on-gold content does */
+.whatsapp-widget__bubble {
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding: 0.9rem 1.3rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 50%, var(--gold) 100%);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.5);
+  transform-origin: right center;
+}
+
+.whatsapp-widget__bubble:hover {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 50%, var(--gold) 100%);
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .about {

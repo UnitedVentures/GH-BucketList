@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { m } from 'framer-motion'
 import { IconChevronRight } from '@tabler/icons-react'
 import { months } from '../lib/months.js'
@@ -31,12 +31,36 @@ function circularOffset(i, active, total) {
 export default function Calendar() {
   const [active, setActive] = useState(0)
   const [navigatingSlug, setNavigatingSlug] = useState(null)
+  // live pointer offset while a swipe is in progress — fed straight into
+  // each card's own x, rather than dragging the stack as a separate
+  // element. That used to layer two independent springs (the stack
+  // snapping back to center, each card animating to its new slot) which
+  // visibly resolved one after the other instead of as one motion — on
+  // mobile this read as "the whole deck swipes, then the card switches".
+  // Driving x from a single source removes the seam: it tracks the
+  // finger 1:1 while dragging, then that same value eases into the new
+  // resting position, so the handoff is continuous.
+  const [dragging, setDragging] = useState(false)
+  const [dragX, setDragX] = useState(0)
+  // distance travelled by the current gesture — read by each card's
+  // onClick to tell a tap from a swipe, since onPan (unlike Framer's
+  // `drag` prop) doesn't suppress taps on its own
+  const dragDistanceRef = useRef(0)
   const total = months.length
   const activeMonth = months[active]
 
   const step = (dir) => setActive((a) => (a + dir + total) % total)
 
-  const onDragEnd = (_, info) => {
+  const onPanStart = () => setDragging(true)
+
+  const onPan = (_, info) => {
+    dragDistanceRef.current = info.offset.x
+    setDragX(info.offset.x)
+  }
+
+  const onPanEnd = (_, info) => {
+    setDragging(false)
+    setDragX(0)
     if (info.offset.x < -60 || info.velocity.x < -400) step(1)
     else if (info.offset.x > 60 || info.velocity.x > 400) step(-1)
   }
@@ -75,11 +99,10 @@ export default function Calendar() {
 
         <m.div
           className="calendar__stack"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={1}
-          dragTransition={{ bounceStiffness: 400, bounceDamping: 40 }}
-          onDragEnd={onDragEnd}
+          onPointerDown={() => { dragDistanceRef.current = 0 }}
+          onPanStart={onPanStart}
+          onPan={onPan}
+          onPanEnd={onPanEnd}
         >
           {months.map((mo, i) => {
             const offset = circularOffset(i, active, total)
@@ -93,13 +116,20 @@ export default function Calendar() {
                 className={`calendar__card${isActive ? ' is-active' : ''}`}
                 style={{ backgroundImage: `url(${mo.image})`, zIndex: 20 - abs }}
                 animate={{
-                  x: offset * CARD_GAP,
+                  x: offset * CARD_GAP + (dragging ? dragX : 0),
                   y: isActive ? -14 : abs * Y_STEP,
                   rotate: offset * ROTATE_STEP,
                   scale: isNavigating ? ACTIVE_SCALE * 1.14 : isActive ? ACTIVE_SCALE : 1 - abs * SCALE_STEP,
                 }}
-                transition={{ type: 'spring', stiffness: isNavigating ? 400 : 260, damping: 30 }}
-                onClick={() => (isActive ? goToItinerary(mo.slug) : setActive(i))}
+                transition={
+                  dragging
+                    ? { type: 'tween', duration: 0 }
+                    : { type: 'spring', stiffness: isNavigating ? 400 : 260, damping: 30 }
+                }
+                onClick={() => {
+                  if (Math.abs(dragDistanceRef.current) > 8) return
+                  isActive ? goToItinerary(mo.slug) : setActive(i)
+                }}
                 aria-label={`${mo.place}, ${mo.month}`}
               >
                 <span className="calendar__cardveil" aria-hidden="true" />
