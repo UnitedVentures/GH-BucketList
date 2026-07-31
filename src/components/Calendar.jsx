@@ -55,7 +55,7 @@ export default function Calendar() {
     <section className="calendar" id="calendar">
       <div className="wrap calendar__head">
         <m.h2 {...reveal({ amount: 0.15 })}>
-          <em className="gold-grad">Our Bucket List</em>
+          <em className="gold-grad">Scroll through our bucket list</em>
         </m.h2>
         {/* <p className="calendar__count serif" aria-live="polite">
           {String(active + 1).padStart(2, '0')}
@@ -120,16 +120,16 @@ export default function Calendar() {
 
       <div className="calendar__panel">
         <p className="calendar__panelmonth">
-          {activeMonth.short} · {activeMonth.edition} · {activeMonth.country}
+          {activeMonth.full} · {activeMonth.place}
         </p>
-        <h3 className="calendar__panelplace serif">{activeMonth.place}</h3>
+        <h3 className="calendar__panelplace serif">{activeMonth.country}</h3>
         <a className="calendar__panellink" href={`?itinerary=${activeMonth.slug}`}>
-          View the Itinerary <span aria-hidden="true">→</span>
+          View Itinerary <span aria-hidden="true">→</span>
         </a>
       </div>
 
       <p className="calendar__hint" aria-hidden="true">
-        Swipe to explore the year · or use the arrows
+        Swipe or use the arrow to browse our collection
       </p>
     </section>
   )

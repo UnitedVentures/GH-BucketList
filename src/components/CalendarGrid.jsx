@@ -58,7 +58,7 @@ export default function CalendarGrid() {
               <span className="bucketgrid__cardplace serif">{mo.place}</span>
               <span className="bucketgrid__cardcountry">{mo.country}</span>
               <span className="bucketgrid__cardlink">
-                View the Itinerary <span aria-hidden="true">→</span>
+                View Itinerary <span aria-hidden="true">→</span>
               </span>
             </m.a>
           ))}

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Story from './components/Story.jsx'
+import PageBackground from './components/PageBackground.jsx'
 import Nav from './components/Nav.jsx'
 import Calendar from './components/Calendar.jsx'
 import Manifesto from './components/Manifesto.jsx'
@@ -79,7 +80,10 @@ export default function App() {
 
   return (
     <>
-      {content}
+      <div className="page">
+        <PageBackground />
+        {content}
+      </div>
       <WhatsAppWidget />
     </>
   )

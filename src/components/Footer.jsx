@@ -24,10 +24,10 @@ export default function Footer() {
             Let's start <em className="gold-grad">planning</em>
           </h2>
           <p>
-            Speak to our concierge directly, or sign up for announcements —
-            new editions, full itineraries and reservation openings,
-            delivered to your inbox. Start ticking off your bucket list,
-            one extraordinary journey at a time.
+            Speak to our concierge directly, or sign up for new editions,
+            full itineraries and reservation openings, delivered to your
+            inbox. Start ticking off your bucket list, one extraordinary
+            journey at a time.
           </p>
           <a
             className="btn btn--ghost footer__whatsapp"
@@ -64,7 +64,7 @@ export default function Footer() {
               alt="Bucket List by Go Holidays"
             />
           </a>
-          <p>© 2026 Bucket List by Go Holidays · One extraordinary journey at a time</p>
+          <p>© Bucket List by Go Holidays · One extraordinary journey at a time</p>
           <div className="footer__social">
             <a href="https://www.instagram.com/goholidays_srilanka/" aria-label="Instagram">
               <IconBrandInstagram />

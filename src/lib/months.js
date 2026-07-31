@@ -7,11 +7,13 @@ const MONTH_NAMES = [
 
 // calendar-ordered (Jan → Dec), independent of the Sep→Aug edition cycle
 export const months = [featured, ...upcoming]
-  .map((d) => ({
-    ...d,
-    short: MONTH_NAMES[
-      MONTH_NAMES.findIndex((m) => d.month.startsWith(m))
-    ].slice(0, 3).toUpperCase(),
-    monthIndex: MONTH_NAMES.findIndex((m) => d.month.startsWith(m)),
-  }))
+  .map((d) => {
+    const name = MONTH_NAMES[MONTH_NAMES.findIndex((m) => d.month.startsWith(m))]
+    return {
+      ...d,
+      short: name.slice(0, 3).toUpperCase(),
+      full: name.toUpperCase(),
+      monthIndex: MONTH_NAMES.indexOf(name),
+    }
+  })
   .sort((a, b) => a.monthIndex - b.monthIndex)

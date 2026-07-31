@@ -11,9 +11,9 @@ export default function BespokeCta() {
   return (
     <m.div className="bespoke-cta" {...reveal()}>
       <p className="serif">
-        None of these on your <em className="gold-grad">bucket list?</em>
+        Are we missing any of your bucket list destinations in our portfolio?
         <br />
-        We can still make it happen.
+        <em className="gold-grad">We will design yours!</em>
       </p>
       <a className="btn btn--solid" href="#contact">
         Talk to Us <span aria-hidden="true">→</span>

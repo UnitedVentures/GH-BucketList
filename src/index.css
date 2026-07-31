@@ -7,12 +7,15 @@
    rgba()-with-opacity usages elsewhere in this file can stay
    theme-aware too, e.g. rgba(var(--ink-rgb), 0.88).
 
-   --on-photo / --on-photo-dim / --on-photo-gold / --on-gold are
-   intentionally NOT theme variables — they're fixed in both themes.
-   Text sitting over a darkened photo (itinerary hero, bucketgrid
-   cards, the parallax band) or over a solid gold button always needs
-   the same fixed-contrast color regardless of site theme, since the
-   veil/button beneath it doesn't change with the theme either. */
+   --on-photo / --on-photo-dim / --on-photo-gold are intentionally NOT
+   theme variables — they're fixed in both themes, since the darkened
+   photo veil they sit on (itinerary hero, bucketgrid cards, the
+   parallax band) doesn't change with the theme either.
+
+   --on-gold IS theme-aware (unlike the above): dark mode's gold is
+   bright enough for dark text, but light mode's gold was deliberately
+   darkened for its own contrast reasons (see --gold-soft below),
+   which flips which text color actually reads on top of it. */
 :root {
   --ink-rgb: 248, 244, 233;
   --ink: rgb(var(--ink-rgb));
@@ -23,21 +26,49 @@
   --stone: #6d6c4d;
   /* a richer, more saturated amber-gold than the first pass — that one
      leaned muddy/bronze at this lightness; more saturation reads as
-     vibrant instead of dull without losing contrast against paper */
+     vibrant instead of dull without losing contrast against paper.
+     Kept for borders/frames/gradients, which only need the lenient
+     3:1 non-text contrast ratio. */
   --gold-rgb: 181, 124, 13;
   --gold: rgb(var(--gold-rgb));
-  --gold-soft: #d7a325;
+  /* --gold-soft is the TEXT color (eyebrows, labels, links) — darkened
+     well past --gold's brightness so it clears 4.5:1 even against the
+     marble background's paler/whiter regions; the old #d7a325 dropped
+     to ~2:1 there and was the "yellow text isn't legible" complaint */
+  --gold-soft: #6b4a06;
   --line: rgba(var(--gold-rgb), 0.35);
 
   --on-photo: #f2efe2;
   --on-photo-dim: #d8d4bf;
   --on-photo-gold: #e2d194;
-  --on-gold: #14180d;
+  /* light mode's gold is dark enough now that white reads far better
+     than the dark-mode value below — see the theme-system comment
+     at the top of the file */
+  --on-gold: #ffffff;
 
-  /* subtle fractal-noise grain for the light theme's paper background
-     — layered into section backgrounds below, not applied globally,
-     so it never dulls text or the gold accents sitting on top of it */
-  --paper-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E");
+  /* marble background art — ONE continuous layer behind the whole page
+     (see .page-bg / PageBackground.jsx), not repeated per section, so
+     it doesn't visibly restart at section boundaries. webp, downscaled
+     from a 5953x17859 5.1MB source JPG to 2000x6000 — plenty of width
+     for cover-cropping any page, and the source's own detail was
+     already too fine to matter at background-texture scale.
+
+     The wash layer is a flat semi-transparent paper tint stacked above
+     the photo — background layers can't take a plain CSS opacity (that
+     would fade page content too), so "60% opacity" is faked by
+     blending 40% of the paper color back over the image instead. */
+  --paper-texture:
+    linear-gradient(rgba(var(--ink-rgb), 0.4), rgba(var(--ink-rgb), 0.4)),
+    url('/assets/Marble.webp') center / cover no-repeat;
+
+  /* individual sections used to each paint their own opaque slice of
+     paper (--section-fill) behind var(--paper-texture) — now that the
+     marble is one shared layer sitting behind everything (.page-bg),
+     sections need to stay transparent in light mode so it shows
+     through continuously. Dark mode has no .page-bg (see below), so
+     its sections keep their original opaque fill. */
+  --section-fill: transparent;
+  --section-fill-coal: transparent;
 
   --font-display: 'Lavish', 'Cormorant Garamond', 'Didot', serif;
   --font-script: 'Libre Baskerville', 'Lavish', serif;
@@ -55,8 +86,15 @@
   --gold-soft: #e2d194;
   --line: rgba(var(--gold-rgb), 0.28);
   /* the paper grain is a light-theme-only detail — dark mode keeps its
-     original, unchanged look */
+     original, unchanged look, with each section opaque again since
+     .page-bg is hidden in dark mode */
   --paper-texture: none;
+  --section-fill: var(--ink);
+  --section-fill-coal: var(--coal);
+  /* dark mode's gold is bright/warm enough for dark text — the
+     original design, unchanged (only light mode's gold got dark
+     enough to need the flip, see :root above) */
+  --on-gold: #14180d;
 }
 
 * {
@@ -70,13 +108,46 @@ html {
 }
 
 body {
-  background: var(--paper-texture) var(--ink);
+  background: var(--section-fill);
   color: var(--cream);
   font-family: var(--font-body);
   font-weight: 300;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* every route's top-level wrapper (see App.jsx) — the positioning
+   context .page-bg needs to size itself to that route's full content
+   height, not just the viewport */
+.page {
+  position: relative;
+  /* z-index:0 (not just position:relative) forces this to establish
+     its own stacking context, so .page-bg's negative z-index stays
+     contained behind this page's own content instead of potentially
+     escaping to compete with unrelated ancestors */
+  z-index: 0;
+}
+
+/* one continuous marble layer behind an entire page — replaces the
+   old per-section repeats (each section is transparent now, see
+   --section-fill above). Sized off .page's own rendered height via
+   inset:0 (a normal CSS behavior for an absolutely-positioned child
+   of a height:auto relative parent — resolved after the in-flow
+   content has been laid out), with a small vertical overhang so the
+   parallax drift below never exposes an edge. useParallax (a small
+   speed, see PageBackground.jsx) gives it a slight lag against the
+   foreground scroll for depth, rather than a flat 1:1 scroll. */
+.page-bg {
+  position: absolute;
+  inset: -6vh 0;
+  z-index: -1;
+  background: var(--paper-texture);
+  pointer-events: none;
+}
+
+[data-theme='dark'] .page-bg {
+  display: none;
 }
 
 img {
@@ -107,7 +178,7 @@ a {
   font-weight: 400;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--gold-soft);
 }
 
 .serif {
@@ -174,7 +245,10 @@ a {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(90px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.45), transparent 70%);
+  /* a warm champagne sheen, not a flat white flashlight — reads as
+     light glinting off the gold itself rather than a foreign color
+     laid over it */
+  background: radial-gradient(90px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 241, 199, 0.55), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -479,7 +553,7 @@ a {
   background: none;
   border: none;
   padding: 0;
-  color: var(--gold);
+  color: var(--gold-soft);
   cursor: pointer;
   transition: color 0.3s ease;
 }
@@ -513,7 +587,7 @@ a {
 .nav__drawerthemetoggle svg {
   width: 18px;
   height: 18px;
-  color: var(--gold);
+  color: var(--gold-soft);
 }
 
 /* ---------- calendar dropdown (desktop) ---------- */
@@ -532,7 +606,7 @@ a {
   display: inline-flex;
   width: 10px;
   height: 10px;
-  color: var(--gold);
+  color: var(--gold-soft);
   transition: transform 0.3s ease;
 }
 
@@ -596,7 +670,7 @@ a {
   font-size: 0.58rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--gold-soft);
 }
 
 .nav__burger {
@@ -709,9 +783,8 @@ a {
 .manifesto {
   padding: 9rem 0 8rem;
   background:
-    var(--paper-texture),
     radial-gradient(60% 50% at 80% 0%, rgba(var(--gold-rgb), 0.07), transparent 70%),
-    var(--ink);
+    var(--section-fill);
 }
 
 .manifesto__grid {
@@ -739,14 +812,6 @@ a {
   color: var(--cream-dim);
   font-size: 0.95rem;
   margin-bottom: 1.6rem;
-}
-
-.manifesto__copy p:first-child {
-  font-family: var(--font-body);
-  font-size: 1.02rem;
-  font-weight: 600;
-  color: var(--cream);
-  line-height: 1.85;
 }
 
 .manifesto__rule {
@@ -813,7 +878,7 @@ a {
 
 .bespoke-cta-section {
   padding: 7rem 0;
-  background: var(--paper-texture) var(--coal);
+  background: var(--section-fill-coal);
 }
 
 /* ---------- our bucket list calendar (swipeable months banner) ---------- */
@@ -832,9 +897,8 @@ a {
   padding: clamp(4.5rem, 9vh, 6.5rem) 0 clamp(1.2rem, 3vh, 2.2rem);
   overflow: hidden;
   background:
-    var(--paper-texture),
     radial-gradient(60% 45% at 50% 0%, rgba(var(--gold-rgb), 0.07), transparent 70%),
-    var(--ink);
+    var(--section-fill);
 }
 
 .calendar__head {
@@ -975,15 +1039,16 @@ a {
 }
 
 .calendar__panelmonth {
-  font-size: 0.62rem;
-  letter-spacing: 0.4em;
+  font-size: clamp(0.85rem, 1.6vh, 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--gold-soft);
 }
 
 .calendar__panelplace {
   margin: 0.5rem 0 0.3rem;
-  font-size: clamp(2rem, 4.2vh, 3.6rem);
+  font-size: clamp(1.6rem, 3.4vh, 2.9rem);
   color: var(--cream);
 }
 
@@ -1020,7 +1085,7 @@ a {
 
 .bucketgrid {
   padding: 11rem 0 7rem;
-  background: var(--paper-texture) var(--ink);
+  background: var(--section-fill);
 }
 
 .bucketgrid__head {
@@ -1156,7 +1221,7 @@ a {
   flex: none;
   width: 26px;
   height: 26px;
-  color: var(--gold);
+  color: var(--gold-soft);
 }
 
 .icon svg {
@@ -1202,9 +1267,8 @@ a {
 .about {
   padding: 11rem 0 7rem;
   background:
-    var(--paper-texture),
     radial-gradient(55% 45% at 15% 100%, rgba(var(--gold-rgb), 0.06), transparent 70%),
-    var(--ink);
+    var(--section-fill);
 }
 
 .about__grid {
@@ -1254,7 +1318,7 @@ a {
 
 .testimonials {
   padding: 11rem 0 7rem;
-  background: var(--paper-texture) var(--coal);
+  background: var(--section-fill-coal);
 }
 
 .testimonials h2 {
@@ -1298,7 +1362,7 @@ a {
 .testimonial__mark {
   width: 28px;
   height: 28px;
-  color: var(--gold);
+  color: var(--gold-soft);
   opacity: 0.75;
 }
 
@@ -1409,7 +1473,7 @@ a {
 
 .itin {
   min-height: 100vh;
-  background: var(--paper-texture) var(--ink);
+  background: var(--section-fill);
 }
 
 .itin__hero {
@@ -1512,7 +1576,7 @@ a {
   font-size: 0.62rem;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--gold-soft);
 }
 
 .itin__factvalue {
@@ -1650,7 +1714,7 @@ a {
   content: '—';
   position: absolute;
   left: 0;
-  color: var(--gold);
+  color: var(--gold-soft);
 }
 
 .itin__rates table {
@@ -1723,7 +1787,7 @@ a {
   display: block;
   width: min(240px, 60vw);
   margin: 3.2rem auto 0;
-  color: var(--gold);
+  color: var(--gold-soft);
   opacity: 0.85;
 }
 
@@ -1845,7 +1909,7 @@ a {
 /* ---------- footer ---------- */
 
 .footer {
-  background: var(--paper-texture) var(--ink);
+  background: var(--section-fill);
   border-top: 1px solid var(--line);
   padding: 7rem 0 3rem;
 }
@@ -2099,7 +2163,7 @@ a {
     background: none;
     border: none;
     padding: 1rem 0.5rem 1rem 1rem;
-    color: var(--gold);
+    color: var(--gold-soft);
     cursor: pointer;
     transition: transform 0.3s ease;
   }
@@ -2137,7 +2201,7 @@ a {
   .nav__drawermonths a span {
     display: inline-block;
     width: 2.6em;
-    color: var(--gold);
+    color: var(--gold-soft);
     font-size: 0.66rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
