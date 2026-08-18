@@ -890,7 +890,10 @@ a {
   height: 100vh;
   height: 100svh;
   display: flex;
-  gap: clamp(1.2rem, 3vh, 2.2rem);
+  /* the swipe hint used to be the last flex child, tightly budgeted
+     against — now that it's gone this can breathe more generously and
+     still fit the same hard 100svh box */
+  gap: clamp(1.6rem, 4vh, 3rem);
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
@@ -932,7 +935,7 @@ a {
   /* clears the active card's visual scale-up (see Calendar.jsx's
      ACTIVE_SCALE), which pushes its rendered top/bottom edges past
      --card-h without changing the layout box itself */
-  margin-top: clamp(2.2rem, 5.5vh, 3.6rem);
+  margin-top: clamp(2.6rem, 6.5vh, 4.4rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -971,6 +974,28 @@ a {
   inset: 0;
   background: rgba(15, 18, 10, 0.5);
   transition: background 0.5s ease;
+}
+
+/* the 3-letter month, block-set dead centre on the photo — set in the
+   site's own display face rather than a bold sans, so it reads as an
+   extension of the brand's typography rather than a sticker. Fixed
+   white regardless of theme (it sits on the veil, which is always
+   dark). */
+.calendar__cardmonth {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vh, 3.6rem);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  /* the glyphs' own left/right sidebearings don't balance a tracked
+     block of text — nudge right to visually center it despite the
+     trailing letter-spacing */
+  padding-left: 0.12em;
+  color: #ffffff;
 }
 
 .calendar__card.is-active {
@@ -1034,7 +1059,7 @@ a {
 
 .calendar__panel {
   flex: none;
-  margin-top: clamp(2.2rem, 5.5vh, 3.6rem);
+  margin-top: clamp(2.6rem, 6.5vh, 4.4rem);
   text-align: center;
 }
 
@@ -1069,16 +1094,6 @@ a {
 .calendar__panellink:hover {
   color: var(--gold-soft);
   gap: 1.2rem;
-}
-
-.calendar__hint {
-  flex: none;
-  margin-top: clamp(0.8rem, 2vh, 1.2rem);
-  text-align: center;
-  font-size: 0.56rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--stone);
 }
 
 /* ---------- our bucket list calendar (full grid page) ---------- */
@@ -2132,16 +2147,16 @@ a {
   /* more breathing room below the fixed nav than the desktop clamp
      gives — real iOS Safari still clipped the script-font heading
      under the opaque nav at the previous value. .calendar is a hard
-     100vh with overflow:hidden, so the extra top clearance is paid
-     for by trimming .calendar__stackwrap's margin-top below (net
-     content height stays flat — no risk of the hint clipping off
-     short devices) */
+     100svh with overflow:hidden, so the extra top clearance is paid
+     for by trimming .calendar__stackwrap's margin-top below, kept
+     tighter than the desktop value since short devices have the least
+     room to spare */
   .calendar {
     padding-top: clamp(8rem, 14vh, 9.5rem);
   }
 
   .calendar__stackwrap {
-    margin-top: clamp(1rem, 2.5vh, 1.8rem);
+    margin-top: clamp(1.4rem, 3.2vh, 2.4rem);
   }
 
   .nav__drawer {
@@ -2261,10 +2276,6 @@ a {
 
   .calendar__chevron {
     display: none;
-  }
-
-  .calendar__hint {
-    padding: 0 4.5rem;
   }
 
   .about__features,

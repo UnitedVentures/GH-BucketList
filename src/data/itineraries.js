@@ -97,7 +97,7 @@ export const itineraries = {
     duration: '07 Nights / 08 Days',
     heroImage: img('photo-1593378026483-2a1fd46a35bd', 2400),
     overview:
-      'Deep inside the Arctic Circle, Tromsø delivers a full week of Nordic winter at its most immersive — a guided Northern Lights safari beneath the polar sky, husky sledding across frozen wilderness, a snowmobile expedition to a remote camp, whale watching by high-speed catamaran, and an afternoon with a Sámi reindeer family.',
+      'Kick off the year chasing the Northern Lights across Arctic Norway. Base yourself in Tromsø and explore at your own pace with private glass-roofed sleigh rides, snowmobile aurora hunts, and nights where you can watch the sky dance from bed. Add fjord cruises, private dog-sledding, and fresh Scandinavian seafood for a trip that feels like stepping into another world.',
     facts: [
       { label: 'Duration', value: '07 Nights / 08 Days' },
       { label: 'Stay', value: 'Tromsø (7 nights) — Home Hotel Aurora or similar' },
@@ -340,7 +340,7 @@ export const itineraries = {
     duration: '13 Nights / 14 Days',
     heroImage: img('photo-1490806843957-31f4c9a91c65', 2400),
     overview:
-      'From Okinawa’s first cherry blossoms of the year to the Sapporo Snow Festival’s ice sculptures, this fourteen-day journey traces Japan at both of its most beautiful extremes. A private guide carries you from a beachfront resort in the south to Tokyo’s temples and sushi counters, a Hakone onsen beneath Mount Fuji, the wild snow monkeys of Nagano, and four nights in the heart of Hokkaido’s winter capital.',
+      'Catch Japan in a rare in-between moment, with snow still on the ground and spring just starting to show. Marvel at Sapporo’s snow sculptures and ice art, watch the famous snow monkeys soak in Nagano’s hot springs before retreating to a ryokan with your own private onsen, then head south to Okinawa to see cherry blossoms bloom months ahead of the mainland.',
     facts: [
       { label: 'Duration', value: '13 Nights / 14 Days' },
       { label: 'Stay', value: 'Okinawa (3 nights) · Tokyo (2 nights) · Hakone (1 night) · Nagano (2 nights) · Sapporo (4 nights)' },
@@ -486,7 +486,10 @@ export const itineraries = {
       },
     ],
     inclusions: [
-      'Private airport and touring transfers throughout',
+      'UAE single-entry tourist visa',
+      'All transfers on a private basis',
+      '5★ hotel accommodation',
+      'Meals and tours as per the itinerary',
       'Half-day private Dubai City Tour — Zabeel Palace, Dubai Frame, Bastakiya, an abra ride across Dubai Creek, the Spice & Gold Souqs and the Islamic Art Centre',
       'Lotus Royal Dinner Cruise — Dubai’s largest mega-yacht, with dinner, soft drinks and live entertainment',
       'Museum of the Future entrance ticket',
@@ -494,8 +497,10 @@ export const itineraries = {
       '12-minute iconic Helicopter Tour over the Dubai skyline (sharing basis)',
     ],
     rates: {
-      note: 'Message our concierge on WhatsApp for current rates, hotel options and availability for this departure.',
-      rows: [],
+      note: 'Per person, in LKR. Excludes international air ticket, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance. Not valid during blackout dates: Gulf Food Manufacturing (03–07 Nov 2026) and BIG 5 (22–27 Nov 2026).',
+      rows: [
+        { tier: '5★ Hotel · Twin Sharing', twin: 'LKR 550,000', single: 'On Request' },
+      ],
     },
   },
   'christmas-markets': {
@@ -573,6 +578,8 @@ export const itineraries = {
       },
     ],
     inclusions: [
+      'Return economy class airfare, including taxes',
+      'Private airport transfers',
       '10 nights’ 4★ accommodation with daily breakfast (Dresden, Prague, Bratislava & Vienna)',
       'First-class train travel between all four cities',
       'Guided walking tours of Dresden, Prague (Old Town, Jewish Quarter & Charles Bridge) and Vienna',
@@ -581,8 +588,150 @@ export const itineraries = {
       'Entry to the Striezelmarkt, Old Town Square, Hviezdoslav Square, Rathausplatz and Schönbrunn Christmas markets',
     ],
     rates: {
-      note: 'Message our concierge on WhatsApp for current rates, hotel options and availability for this departure.',
-      rows: [],
+      note: 'Per person, in LKR. Excludes visa, meals not mentioned in the itinerary, driver and guide tips, and anything else not specified.',
+      rows: [
+        { tier: '4★ Hotel · Twin Sharing', twin: 'LKR 1,235,000', single: 'On Request' },
+      ],
+    },
+  },
+  'machu-picchu': {
+    edition: 'The May 2027 Edition',
+    title: 'Lima, Cusco & the Sacred Valley to Machu Picchu',
+    location: 'Lima · Cusco · Sacred Valley · Machu Picchu · Peru',
+    duration: '06 Nights / 07 Days',
+    heroImage: img('photo-1587595431973-160d0d94add1', 2400),
+    overview:
+      'Discover Machu Picchu the way it’s meant to be seen, with the dry season delivering clear skies over the ruins. From Lima’s colonial old town and the Larco Museum’s pre-Hispanic treasures to the Sacred Valley’s Inca salt terraces and a full day exploring the Seven Wonders of the Modern World, this journey threads together Peru’s most storied landscapes — with an optional trek to the technicolour slopes of Rainbow Mountain.',
+    facts: [
+      { label: 'Duration', value: '06 Nights / 07 Days' },
+      { label: 'Route', value: 'Lima (2 nights) · Cusco (3 nights) · Sacred Valley (1 night)' },
+      { label: 'Meal Plan', value: 'Bed & Breakfast throughout, with lunch included on the Sacred Valley and Machu Picchu days' },
+      { label: 'Validity', value: 'May 2027 (dry season)' },
+    ],
+    days: [
+      {
+        day: 'Day 01',
+        title: 'Arrival in Lima',
+        text: 'Arrive in Lima, where you’ll be met and transferred to your hotel, with a documentation kit detailing the days ahead. The rest of the day is free to unwind and recover from your journey.',
+      },
+      {
+        day: 'Day 02',
+        title: 'Colonial & Modern Lima — the Larco Museum',
+        text: 'A half-day city tour tracing Lima’s two characters — the modern Miraflores and San Isidro districts, and the UNESCO-listed historic centre. On foot through the Main Square, take in the Government Palace, the Cathedral and the Archbishop’s Palace, then step inside the Convent of Santo Domingo before a visit to the Larco Museum, home to almost 45,000 pieces of pre-Hispanic art, textiles and jewellery.',
+      },
+      {
+        day: 'Day 03',
+        title: 'Onward to Cusco',
+        text: 'Fly to Cusco and spend the day at leisure in this beautiful colonial city, built upon the remains of Inca buildings. Highlights within easy reach include the Temple of the Sun (Coricancha), San Pedro Market, the Cathedral and the Sacsayhuamán fortress (a guided half-day city tour is available at extra cost).',
+      },
+      {
+        day: 'Day 04',
+        title: 'Sacred Valley — Maras, Moray & Misminay',
+        text: 'A full day exploring three jewels of the Sacred Valley. Admire the ancient Maras salt terraces from above, visit the Moray archaeological site — an Inca agricultural laboratory of concentric terraces — and spend time with the traditional community of Misminay, sharing in their music, dance and daily Andean life.',
+        image: img('photo-1554342416-35afa38219f8'),
+        imageAlt: 'The terraced salt pans of Maras in the Sacred Valley',
+      },
+      {
+        day: 'Day 05',
+        title: 'Machu Picchu',
+        text: 'Board the train from Ollantaytambo to Aguas Calientes, then ascend to one of the Seven Wonders of the Modern World. Explore the ancient citadel of Machu Picchu at your own pace, surrounded by incomparable Andean scenery, before returning by train and transfer back to Cusco.',
+        image: img('photo-1567597243073-2d274aabecec'),
+        imageAlt: 'The ancient citadel of Machu Picchu framed by an Inca stone doorway',
+      },
+      {
+        day: 'Day 06',
+        title: 'Cusco at Leisure',
+        text: 'A free day in Cusco, or head out on the optional full-day trek to Vinicunca — the Rainbow Mountain — where mineral-streaked slopes in red, purple, green and gold reward around 8 km of walking at altitude (extra cost, minimum 2 passengers).',
+        image: img('photo-1744295816404-4c73fd69e0f2'),
+        imageAlt: 'The striped slopes of Rainbow Mountain (Vinicunca), Peru',
+      },
+      {
+        day: 'Day 07',
+        title: 'Departure',
+        text: 'Transfer to the airport for your flight back to Lima, connecting onward to your international flight home.',
+      },
+    ],
+    inclusions: [
+      'All transfers between Lima, Cusco and the Sacred Valley, on a private basis',
+      'Star-category hotel accommodation across Lima, Cusco and the Sacred Valley',
+      'Airport meet & greet in Lima with a documentation kit, and hotel registration assistance',
+      'Meals and tours as per the itinerary',
+      'Half-day guided city tour of Lima, including the Larco Museum',
+      'Full-day guided tour of the Sacred Valley — Maras, Moray & Misminay',
+      'Full-day Machu Picchu excursion by train from Ollantaytambo, with entry to the citadel',
+    ],
+    rates: {
+      note: 'Per person, in LKR. Excludes international & domestic air tickets, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance.',
+      rows: [
+        { tier: 'Star Category Hotel · Twin Sharing', twin: 'LKR 480,000', single: 'On Request' },
+      ],
+    },
+  },
+  'great-migration': {
+    edition: 'The July 2027 Edition',
+    title: 'Best of Kenya — Nairobi & the Masai Mara',
+    location: 'Nairobi · Masai Mara National Reserve · Kenya',
+    duration: '05 Nights / 06 Days',
+    heroImage: img('photo-1564101160531-4838e8a5f4e7', 2400),
+    overview:
+      'Witness the Great Migration at its most dramatic. From Nairobi’s elephant orphanage and giraffe sanctuary to two full days immersed in the Masai Mara’s sweeping plains, this safari pairs easy city introductions with the raw, unfiltered wilderness that has made the Mara one of Africa’s most celebrated reserves — with an optional sunrise hot air balloon safari over the herds.',
+    facts: [
+      { label: 'Duration', value: '05 Nights / 06 Days' },
+      { label: 'Route', value: 'Nairobi (2 nights) · Masai Mara National Reserve (2 nights) · Nairobi (1 night)' },
+      { label: 'Meal Plan', value: 'Bed & Breakfast in Nairobi · Full Board in the Masai Mara' },
+      { label: 'Validity', value: 'July 2027 (Great Migration season)' },
+    ],
+    days: [
+      {
+        day: 'Day 01',
+        title: 'Arrival in Nairobi',
+        text: 'Arrive at Jomo Kenyatta International Airport, where you’ll be met and transferred to the Radisson Blu Hotel & Residence Nairobi Arboretum. The rest of the day is free to relax and recover from your journey.',
+      },
+      {
+        day: 'Day 02',
+        title: 'Giraffe Centre & the Sheldrick Wildlife Trust',
+        text: 'Hand-feed the endangered Rothschild’s giraffes at the Giraffe Centre, then visit the Sheldrick Wildlife Trust to learn about the rescue and rehabilitation of orphaned elephants and rhinos, and witness their bottle-feeding sessions. Enjoy lunch at the historic Karen Blixen Coffee Garden, then visit the Kobe Beads Factory before returning to your hotel.',
+        image: img('photo-1702509416519-176ac54b6fbd'),
+        imageAlt: 'A rescued baby elephant being bottle-fed at a Nairobi wildlife sanctuary',
+      },
+      {
+        day: 'Day 03',
+        title: 'Into the Masai Mara',
+        text: 'Depart for the iconic Masai Mara, driving through the dramatic Great Rift Valley before reaching the reserve’s sweeping savannahs. Check in to Sarova Mara Game Camp, enjoy lunch, and head out on an introductory afternoon game drive across the Mara’s wildlife-dotted plains.',
+      },
+      {
+        day: 'Day 04',
+        title: 'Full-Day Masai Mara Game Drive',
+        text: 'A full day immersed in the Mara — an early morning game drive for the best chance at lions, cheetahs, leopards and hyenas, and an afternoon exploring further corners of the reserve for elephants, giraffes, buffalo and its resident birdlife. Optional extras include a sunrise hot air balloon safari over the reserve, and a cultural visit to a Maasai village.',
+        image: img('photo-1586491157403-f3407cb8ff5b'),
+        imageAlt: 'A hot air balloon safari over the Masai Mara at sunrise',
+      },
+      {
+        day: 'Day 05',
+        title: 'Return to Nairobi',
+        text: 'After a final breakfast in the Mara, drive back to Nairobi, stopping for lunch at a local restaurant before checking in to your airport hotel. The afternoon is free for relaxing or optional activities.',
+      },
+      {
+        day: 'Day 06',
+        title: 'Departure',
+        text: 'Transfer to Jomo Kenyatta International Airport for your departure flight, marking the end of an enriching Kenyan safari.',
+      },
+    ],
+    inclusions: [
+      'All transfers on a private basis',
+      'Star-category hotel accommodation — Bed & Breakfast in Nairobi, Full Board on safari',
+      'Airport meet & greet in Nairobi',
+      'Giraffe Centre and Sheldrick Wildlife Trust visits, with lunch at Karen Blixen Coffee Garden',
+      'All game drives in a private safari 4x4 Land Cruiser with a pop-up roof for game viewing',
+      'Services of a professional English-speaking driver-guide, on a private basis',
+      'All park fees and government taxes',
+      'Complimentary drinking water per person during game drives',
+    ],
+    rates: {
+      note: 'Per person, in LKR. Excludes international & domestic air tickets, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance. Optional extras: Maasai Village visit (LKR 15,000 per person) · hot air balloon safari (LKR 240,000 per person).',
+      rows: [
+        { tier: 'Star Category Hotel · Twin Sharing', twin: 'LKR 950,000', single: 'On Request' },
+      ],
     },
   },
 }

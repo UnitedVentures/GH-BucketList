@@ -133,6 +133,7 @@ export default function Calendar() {
                 aria-label={`${mo.place}, ${mo.month}`}
               >
                 <span className="calendar__cardveil" aria-hidden="true" />
+                <span className="calendar__cardmonth" aria-hidden="true">{mo.short}</span>
               </m.div>
             )
           })}
@@ -157,10 +158,6 @@ export default function Calendar() {
           View Itinerary <span aria-hidden="true">→</span>
         </a>
       </div>
-
-      <p className="calendar__hint" aria-hidden="true">
-        Swipe or use the arrow to browse our collection
-      </p>
     </section>
   )
 }

@@ -13,11 +13,13 @@ export default function Manifesto() {
           </div>
           <div className="manifesto__copy reveal" data-delay="1">
             <p>
-              Welcome to the Bucket List Collection — every journey is
-              scheduled for the ideal time of year — balancing the best
-              weather and seasonal highlights while avoiding the crowds, and
-              ensuring once-in-a-lifetime experiences remain accessible
-              without compromise on quality.
+              Welcome to a new era of exploration. Introducing the Go
+              Holidays Bucket List — a curated 12-month calendar of
+              extraordinary destinations designed for those who seek more
+              than just a vacation. Each month, we unlock a
+              once-in-a-lifetime journey to the world’s most iconic and
+              elusive wonderlands, crafted with an emphasis on seamless
+              luxury, privacy, and bespoke elegance.
             </p>
             <div className="manifesto__rule" />
             <p>

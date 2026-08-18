@@ -20,16 +20,6 @@ const panels = [
       </>
     ),
   },
-  {
-    eyebrow: 'The Craft',
-    text: (
-      <>
-        We design each itinerary around authenticity and uniqueness.
-        Breathtaking landscapes and unforgettable moments
-        <em> into the heart and soul of every destination.</em>
-      </>
-    ),
-  },
 ]
 
 // 0 = landing, 1..panels.length = the panels above. Once the last panel's
