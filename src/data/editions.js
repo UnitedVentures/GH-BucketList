@@ -97,11 +97,11 @@ export const upcoming = [
   },
   {
     edition: 'Nº 08',
-    slug: 'silk-road',
+    slug: 'almaty',
     month: 'August 2027',
-    place: 'Luxury Silk Road',
-    country: 'Uzbekistan',
-    image: img('photo-1664602078796-68ee76b3fc59'),
+    place: 'Almaty Mountain Escape',
+    country: 'Kazakhstan',
+    image: img('photo-1659651117607-d2b397cf100f'),
   },
 ]
 
