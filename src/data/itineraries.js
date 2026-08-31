@@ -130,6 +130,8 @@ export const itineraries = {
       {
         day: 'Day 05',
         title: 'Snowmobile Expedition to Camp Tamok',
+        image: img('photo-1737993934264-fb1ae9dd10f7'),
+        imageAlt: 'A snowmobile expedition to Camp Tamok in the Arctic',
         text: 'A 90-minute drive into the remote Tamokdalen region brings you to Camp Tamok, where your guides kit you out in a thermal suit, boots, gloves and helmet before a full safety briefing. Navigate snowy trails through mountains, valleys and frozen lakes, sharing a snowmobile and swapping driver and passenger halfway through, before a hot meal and fireside stories in a traditional lavvu tent. Overnight in Tromsø.',
       },
       {
@@ -267,7 +269,7 @@ export const itineraries = {
     title: 'Cape Town International Jazz Festival & Safari',
     location: 'Cape Town · Aquila · South Africa',
     duration: '06 Nights / 07 Days',
-    heroImage: img('photo-1675118222234-69660ad7cca8', 2400),
+    heroImage: img('photo-1511192336575-5a79af67a629', 2400),
     overview:
       'Two nights of world-class jazz meet the very best of the Cape — Table Mountain, the Winelands, the Cape Peninsula and a private safari at Aquila — in one seven-day escape built around the Cape Town International Jazz Festival.',
     facts: [
@@ -286,7 +288,7 @@ export const itineraries = {
         day: 'Day 02',
         title: 'Table Mountain & City Tour — Jazz Festival Night One',
         text: 'After a leisurely breakfast, embark on a Table Mountain and city tour: the aerial cable way (weather permitting), a Bo-Kaap walkabout, District Six Museum, Company’s Garden, the Houses of Parliament, a drive past the Grand Parade, and the Castle of Good Hope. Freshen up at the hotel before return transfers and tickets to the Cape Town International Jazz Festival.',
-        image: img('photo-1545510120-66374ff70e4f'),
+        image: img('photo-1415201364774-f6f0bb35f28f'),
         imageAlt: 'Cape Town city at dusk beneath Table Mountain',
       },
       {
@@ -307,7 +309,7 @@ export const itineraries = {
         day: 'Day 05',
         title: 'Afternoon Safari at Aquila Private Game Reserve',
         text: 'A trip to Aquila Private Game Reserve for an afternoon safari — welcome drinks, lunch, and a game drive in an open safari vehicle — before departing back to Cape Town.',
-        image: img('photo-1544211393-7fdc8fca9f4f'),
+        image: img('photo-1516426122078-c23e76319801'),
         imageAlt: 'A lion on the reserve',
       },
       {
@@ -348,6 +350,8 @@ export const itineraries = {
     facts: [
       { label: 'Duration', value: '13 Nights / 14 Days' },
       { label: 'Stay', value: 'Sapporo (5 nights) · Nagano (2 nights) · Hakone (1 night) · Okinawa (3 nights) · Tokyo (2 nights)' },
+      { label: 'Hotels', value: 'ANA Crowne Plaza Sapporo · Mercure Nagano Matsushiro Resort & Spa · Tokinoyu Setsugetsuka, Hakone · Ala Mahana Condo Hotel, Okinawa · Grand Nikko Tokyo Daiba (or similar)' },
+      { label: 'Meal Plan', value: 'Daily breakfast, plus lunch and dinner as per the itinerary' },
       { label: 'Style', value: 'Private vehicle, English-speaking guide throughout · 5★ hotels and luxury ryokan' },
       { label: 'Validity', value: 'February 2027' },
     ],
@@ -440,20 +444,20 @@ export const itineraries = {
       },
     ],
     inclusions: [
-      'Private vehicle and English-speaking guide throughout',
-      '5★ hotels in Sapporo & Tokyo, luxury ryokan stays in Nagano & Hakone, and a luxury beach resort in Okinawa',
-      'Sapporo Snow Festival, the Susukino ice sculpture area and evening illuminations',
-      'Otaru Canal, glass workshop and the Music Box Museum',
-      'Choice of a private snowmobile, horse sleigh, Niseko day trip or whisky distillery experience in Hokkaido',
-      'Snow Monkey Park (Jigokudani) and a Nagano sake brewery visit',
-      'Lake Ashi cruise and the Hakone Open-Air Museum',
-      'Cherry blossom viewing at Mt Yaedake and the Nakijin Castle Ruins, Okinawa',
-      'Shurijo Castle Park and Okinawa World, with a traditional Eisa performance',
-      'Kaiseki dinners at both ryokan stays, an omakase sushi dinner in Tokyo, and a Hokkaido crab farewell dinner',
+      '13 nights’ accommodation on twin-sharing basis with daily breakfast, in a double/twin room',
+      'Lunch and dinner as per the itinerary',
+      'English-speaking guide as per the itinerary (guide does not accompany clients on the CTS–HND, HND–OKA and OKA–HND domestic flight sectors)',
+      'Private transfers as per the itinerary',
+      'Domestic airfare — CTS–HND, HND–OKA and OKA–HND',
+      'Admission fees to all touristic sights mentioned in the itinerary',
+      'A 500ml bottle of mineral water per person per day',
+      'Sapporo Snow Festival, Otaru Canal & glass workshop, Snow Monkey Park, Lake Ashi cruise, and cherry blossom viewing at Mt Yaedake & the Nakijin Castle Ruins',
     ],
     rates: {
-      note: 'Message our concierge on WhatsApp for current rates, hotel options and availability for this departure. Flight schedules and operating days remain subject to airline revision; final ticketing should be checked against the exact travel dates.',
-      rows: [],
+      note: 'Per person, in LKR, sharing a twin room (price based on a minimum of 4 guests travelling together — ask our concierge for 2 or 6-pax pricing). Excludes visa (visa support available at USD 50pp), international airfare, travel insurance, the Day 4 winter experience activity (quoted separately by preference), tips to guides and drivers, and anything else not mentioned in the inclusions. Flight schedules and operating days remain subject to airline revision; final ticketing should be checked against the exact travel dates.',
+      rows: [
+        { tier: 'Twin Sharing · min. 4 guests', twin: 'LKR 2,950,000', single: 'On Request' },
+      ],
     },
   },
   'dubai-from-above': {
@@ -548,6 +552,8 @@ export const itineraries = {
       {
         day: 'Day 02',
         title: 'Dresden’s Old Town & the Striezelmarkt',
+        image: img('photo-1619120810930-6ca5048deee1'),
+        imageAlt: 'The Striezelmarkt in Dresden',
         text: 'A small-group guided walking tour through Dresden’s historic Old Town, taking in the Frauenkirche, Neumarkt, the Fürstenzug, Dresden Castle, the Zwinger and the Semperoper. In the evening, explore the Striezelmarkt — Germany’s oldest Christmas market — for traditional festive stalls, handcrafted gifts and seasonal treats. Overnight in Dresden.',
       },
       {
@@ -565,6 +571,8 @@ export const itineraries = {
       {
         day: 'Day 05',
         title: 'Prague’s Christmas Markets with Locals',
+        image: img('photo-1766470656787-2a56b9a9f7d8'),
+        imageAlt: 'A Christmas market stall in Prague',
         text: 'A small-group tour through some of Prague’s most enchanting Christmas markets, sampling seasonal treats and handcrafted gifts as you soak up the city’s festive traditions. Overnight in Prague.',
       },
       {
@@ -643,6 +651,8 @@ export const itineraries = {
       {
         day: 'Day 03',
         title: 'Onward to Cusco',
+        image: img('photo-1733163013238-6ad56689af18'),
+        imageAlt: 'The Plaza de Armas in Cusco, Peru',
         text: 'Fly to Cusco and spend the day at leisure in this beautiful colonial city, built upon the remains of Inca buildings. Highlights within easy reach include the Temple of the Sun (Coricancha), San Pedro Market, the Cathedral and the Sacsayhuamán fortress (a guided half-day city tour is available at extra cost).',
       },
       {
