@@ -211,7 +211,7 @@ export default function Itinerary({ slug }) {
 
           <div className="itin__grid">
             <div className="itin__inclusions reveal">
-              <p className="eyebrow">The Experience Includes</p>
+              <p className="eyebrow">The Package Includes</p>
               <ul>
                 {itin.inclusions.map((inc) => (
                   <li key={inc}>{inc}</li>
@@ -244,6 +244,7 @@ export default function Itinerary({ slug }) {
                 <p className="itin__ratenote itin__ratenote--onrequest">Price on Request</p>
               )}
               <p className="itin__ratenote">{itin.rates.note}</p>
+              <p className="itin__ratenote">Terms & conditions apply. Rates are subject to change due to currency fluctuation. Subject to availability at time of confirmation.</p>
             </div>
           </div>
 

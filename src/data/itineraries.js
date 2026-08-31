@@ -76,7 +76,7 @@ export const itineraries = {
     rates: {
       note: 'Per person, in LKR, on twin/double sharing basis. Hotels and rates are subject to availability; not valid on blackout dates and peak periods. Excludes visa, international & domestic flight tickets, meals not mentioned in the itinerary, driver and guide tips, and anything else not mentioned in the itinerary.',
       rows: [
-        { tier: 'Twin Sharing', twin: 'LKR 580,000', single: 'On Request' },
+        { tier: 'Twin Sharing', twin: 'LKR 580,000 (starting price)', single: 'On Request' },
       ],
     },
     alternative: {
@@ -100,7 +100,7 @@ export const itineraries = {
       { label: 'Duration', value: '07 Nights / 08 Days' },
       { label: 'Stay', value: 'Tromsø (7 nights) — Home Hotel Aurora or similar' },
       { label: 'Meal Plan', value: 'Half-board (breakfast & dinner) throughout' },
-      { label: 'Validity', value: 'January 2027 (Fixed Departure)' },
+      { label: 'Validity', value: 'January 2027' },
     ],
     days: [
       {
@@ -162,10 +162,13 @@ export const itineraries = {
       'Snowmobile expedition to Camp Tamok with full equipment and a hot meal in a lavvu tent',
       'High-speed catamaran whale watching safari',
       'Sámi reindeer camp experience with feeding, storytelling and photography',
+      "Airport transfers in Tromsø, and all local transport for excursions and activities as per the itinerary",
     ],
     rates: {
       note: 'Message our concierge on WhatsApp for current rates, hotel options and availability for this departure.',
-      rows: [],
+      rows: [
+        { tier: 'Twin Sharing · min. 2 guests', twin: 'LKR 1,200,000 (starting from)', single: 'On Request' },
+      ],
     },
   },
   'portugal-spain': {
@@ -185,7 +188,7 @@ export const itineraries = {
     days: [
       {
         day: 'Day 01',
-        title: 'Arrival in Porto — the Ribeira',
+        title: 'Arrrival in Lisbon',
         text: 'Arrive in Porto and transfer to the Porto Ribeira Hotel for two nights. Depending on your arrival time, take in your first glimpse of the Ribeira, the UNESCO-listed historic district, strolling the Douro riverbanks and admiring the colourful facades and the famous Dom Luís I Bridge.',
       },
       {
@@ -258,6 +261,7 @@ export const itineraries = {
       'Full-day excursions to Sintra & Cascais, and to Córdoba',
       'Entrance to the Alhambra and its gardens in Granada',
       'Train travel between Coimbra–Lisbon and Seville–Granada, and a flight between Lisbon–Seville',
+      'Airport transfers in Porto, Lisbon, Seville and Granada',
     ],
     rates: {
       note: 'Message our concierge on WhatsApp for current rates, hotel options and availability for this departure.',
@@ -326,7 +330,6 @@ export const itineraries = {
     inclusions: [
       'Accommodation as per program, including daily breakfast',
       'Luxury air-conditioned vehicle throughout the tour',
-      'Cape Town International Jazz Festival tickets for 2 nights (subject to event schedule and availability)',
       'Cape Peninsula Tour entrance fees — Chapman’s Peak (if open), the funicular, and Cape Point',
       'Three wine tastings on the Winelands Tour',
       'Table Mountain cable way (weather permitting) and Castle of Good Hope entry',
@@ -335,7 +338,7 @@ export const itineraries = {
     rates: {
       note: 'Per person, in LKR, on twin/double sharing basis. Excludes visa, international & domestic flight tickets, Cape Town International Jazz Festival tickets for 2 nights (subject to event schedule and availability), return transfers to and from Jazz venues, meals not mentioned in the itinerary, driver and guide tips, and anything else not mentioned in the itinerary.',
       rows: [
-        { tier: 'Twin Sharing', twin: 'LKR 1,180,000', single: 'On Request' },
+        { tier: 'Twin Sharing', twin: 'LKR 1,180,000 (starting from)', single: 'On Request' },
       ],
     },
   },
@@ -456,7 +459,7 @@ export const itineraries = {
     rates: {
       note: 'Per person, in LKR, sharing a twin room (price based on a minimum of 4 guests travelling together — ask our concierge for 2 or 6-pax pricing). Excludes visa (visa support available at USD 50pp), international airfare, travel insurance, the Day 4 winter experience activity (quoted separately by preference), tips to guides and drivers, and anything else not mentioned in the inclusions. Flight schedules and operating days remain subject to airline revision; final ticketing should be checked against the exact travel dates.',
       rows: [
-        { tier: 'Twin Sharing · min. 4 guests', twin: 'LKR 2,950,000', single: 'On Request' },
+        { tier: 'Twin Sharing · min. 4 guests', twin: 'LKR 2,950,000 (starting price)', single: 'On Request' },
       ],
     },
   },
@@ -522,9 +525,9 @@ export const itineraries = {
       '12-minute iconic Helicopter Tour over the Dubai skyline (sharing basis)',
     ],
     rates: {
-      note: 'Per person, in LKR. Excludes international air ticket, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance. Not valid during blackout dates: Gulf Food Manufacturing (03–07 Nov 2026) and BIG 5 (22–27 Nov 2026).',
+      note: 'Per person, in LKR. Excludes international air ticket, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance. Not valid during blackout dates: Gulf Food Manufacturing and BIG 5.',
       rows: [
-        { tier: '5★ Hotel · Twin Sharing', twin: 'LKR 550,000', single: 'On Request' },
+        { tier: '5★ Hotel · Twin Sharing', twin: 'LKR 660,000 (Starting from)', single: 'On Request' },
       ],
     },
   },
@@ -577,12 +580,12 @@ export const itineraries = {
       },
       {
         day: 'Day 06',
-        title: 'Onward to Bratislava',
+        title: 'Leisure at Prague',
         text: 'Check out and travel by first-class train to Bratislava (approx. 4h 25m). After check-in, a guided walk past St Martin’s Cathedral, the Old Town Hall and Bratislava Castle, followed by a Christmas Market Food Tour at Hviezdoslavovo námestie, sampling traditional Slovak specialities. Overnight in Bratislava.',
       },
       {
         day: 'Day 07',
-        title: 'Onward to Vienna',
+        title: 'Onward to Vienna ',
         text: 'Check out and travel by first-class train to Vienna (approx. 56 minutes). Check in to your hotel and relax the rest of the evening. Overnight in Vienna.',
       },
       {
@@ -683,7 +686,7 @@ export const itineraries = {
       },
     ],
     inclusions: [
-      'All transfers between Lima, Cusco and the Sacred Valley, on a private basis',
+      'All airport transfers',
       'Star-category hotel accommodation across Lima, Cusco and the Sacred Valley',
       'Airport meet & greet in Lima with a documentation kit, and hotel registration assistance',
       'Meals and tours as per the itinerary',
@@ -694,7 +697,7 @@ export const itineraries = {
     rates: {
       note: 'Per person, in LKR. Excludes international & domestic air tickets, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance.',
       rows: [
-        { tier: 'Star Category Hotel · Twin Sharing', twin: 'LKR 480,000', single: 'On Request' },
+        { tier: 'Star Category Hotel · Twin Sharing', twin: 'LKR 480,000 (starting price)', single: 'On Request' },
       ],
     },
   },
@@ -759,7 +762,7 @@ export const itineraries = {
       'Complimentary drinking water per person during game drives',
     ],
     rates: {
-      note: 'Per person, in LKR. Excludes international & domestic air tickets, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance. Optional extras: Maasai Village visit (LKR 15,000 per person) · hot air balloon safari (LKR 240,000 per person).',
+      note: 'Per person, in LKR. Excludes international & domestic air tickets, Visa, additional lunch/dinner beyond the itinerary, personal expenses, guide/driver tips and travel insurance. Optional extras: Maasai Village visit (LKR 15,000 per person) · hot air balloon safari (LKR 240,000 per person).',
       rows: [
         { tier: 'Star Category Hotel · Twin Sharing', twin: 'LKR 950,000', single: 'On Request' },
       ],
@@ -846,7 +849,7 @@ export const itineraries = {
     rates: {
       note: 'Per person, in LKR, sharing twin, for April 2027. Excludes visa, international & domestic flight tickets, meals not mentioned in the itinerary, driver and guide tips, and anything else not mentioned in the itinerary.',
       rows: [
-        { tier: 'Twin Sharing', twin: 'LKR 755,000', single: 'On Request' },
+        { tier: 'Twin Sharing', twin: 'LKR 755,000 (starting from)', single: 'On Request' },
       ],
     },
   },
@@ -930,7 +933,123 @@ export const itineraries = {
     rates: {
       note: 'Per person, in LKR, sharing twin, for August 2027 (price based on a minimum of 2 guests travelling together). Excludes visa, domestic & international airfare, travel insurance & medical premium, medical tests, optional activities, meals/excursions/transfers other than specified in the itinerary, personal expenses, and all tips, porterage and gratuities.',
       rows: [
-        { tier: 'Twin Sharing', twin: 'LKR 580,000', single: 'On Request' },
+        { tier: 'Twin Sharing', twin: 'LKR 580,000 (starting from)', single: 'On Request' },
+      ],
+    },
+  },
+  'alaska-montreal': {
+    edition: 'The June 2027 Edition',
+    title: 'Alaska Cruise & Montreal Jazz Festival',
+    location: 'Vancouver · Alaska · Montreal · Canada & USA',
+    duration: '13 Nights / 14 Days',
+    heroImage: img('photo-1605978208410-c3deb0fab40d', 2400),
+    overview:
+      'Seven nights cruising Alaska’s Inside Passage aboard Celebrity Summit — glaciers calving into Endicott Arm, the boardwalks of Skagway and Ketchikan, and the waterfront of Juneau — bookended by nights in Vancouver, then east to Montreal for two evenings at the Montreal International Jazz Festival.',
+    facts: [
+      { label: 'Duration', value: '13 Nights / 14 Days' },
+      { label: 'Route', value: 'Vancouver (2 nights) · Alaska Cruise aboard Celebrity Summit (7 nights) · Montreal (4 nights)' },
+      { label: 'Cruise', value: 'Celebrity Summit · 7-Night Alaska Dawes Glacier itinerary, departing Vancouver' },
+      { label: 'Meal Plan', value: 'Daily breakfast at hotels · Full board onboard the cruise' },
+      { label: 'Validity', value: '19 June – 02 July 2027 (Fixed Departure)' },
+    ],
+    days: [
+      {
+        day: 'Day 01 - 19th June 2027',
+        title: 'Arrival in Vancouver',
+        text: 'Arrive in Vancouver, British Columbia, and transfer to your hotel. Overnight in Vancouver.',
+      },
+      {
+        day: 'Day 02 - 20th June 2027',
+        title: 'Embarkation Day',
+        text: 'After breakfast, check out and proceed to the pier to board Celebrity Summit, departing Vancouver at 4:30pm on your 7-night Alaska cruise.',
+        image: img('photo-1783321708638-479053dc1186'),
+        imageAlt: 'A cruise ship docked at Canada Place, Vancouver',
+      },
+      {
+        day: 'Day 03 - 21st June 2027',
+        title: 'Cruising the Inside Passage',
+        text: 'A day at sea threading the sheltered channels and forested islands of the Inside Passage, with wildlife and scenery from the deck.',
+      },
+      {
+        day: 'Day 04 - 22nd June 2027',
+        title: 'Endicott Arm & Dawes Glacier',
+        text: 'A scenic cruising day into Endicott Arm, a narrow tidewater fjord where the Dawes Glacier calves into the sea amid drifting icebergs — one of Alaska’s most dramatic sights.',
+        image: img('photo-1657682899797-5692d871dd0e'),
+        imageAlt: 'A tidewater glacier calving into an Alaskan fjord',
+      },
+      {
+        day: 'Day 05 - 23rd June 2027',
+        title: 'Skagway, Alaska',
+        text: 'A call at Skagway, the historic gateway to the Klondike Gold Rush, with its boardwalks and false-front buildings free to explore at your own pace.',
+        image: img('photo-1719143044268-b08daa290002'),
+        imageAlt: 'The historic boardwalk town of Skagway, Alaska',
+      },
+      {
+        day: 'Day 06 - 24th June 2027',
+        title: 'Juneau, Alaska',
+        text: 'A call at Juneau, Alaska’s capital, set beneath the Coast Mountains with its waterfront shops, cafés and mountain views right at the cruise dock.',
+        image: img('photo-1721774998404-e8adf8392fbe'),
+        imageAlt: 'The waterfront pier and shops of downtown Juneau, Alaska',
+      },
+      {
+        day: 'Day 07 - 25th June 2027',
+        title: 'Ketchikan, Alaska',
+        text: 'A call at Ketchikan, the “Salmon Capital of the World”, known for the colourful stilted buildings and boardwalks of historic Creek Street.',
+        image: img('photo-1671588546914-10522b8a8846'),
+        imageAlt: 'The colourful stilted buildings of Creek Street, Ketchikan',
+      },
+      {
+        day: 'Day 08 - 26th June 2027',
+        title: 'Cruising the Inside Passage',
+        text: 'A final day at sea back through the Inside Passage, with time to enjoy the ship’s amenities before returning to Vancouver.',
+      },
+      {
+        day: 'Day 09 - 27th June 2027',
+        title: 'Return to Vancouver',
+        text: 'Arrive back into Vancouver in the morning. Disembark, and transfer from the pier to your hotel for an overnight stay.',
+      },
+      {
+        day: 'Day 10 - 28th June 2027',
+        title: 'Vancouver to Montreal',
+        text: 'After breakfast, check out and transfer to the airport for your flight to Montreal. On arrival, transfer to your hotel.',
+      },
+      {
+        day: 'Day 11 - 29th June 2027',
+        title: 'Montreal International Jazz Festival — Night One',
+        text: 'A free morning, with an evening one-way transfer to the Montreal International Jazz Festival for your first night of live performances across the city’s downtown stages.',
+        image: img('photo-1661433468599-3dbfe83b53b4'),
+        imageAlt: 'A live outdoor concert crowd at a summer music festival',
+      },
+      {
+        day: 'Day 12 - 30th June 2027',
+        title: 'Montreal International Jazz Festival — Night Two',
+        text: 'A second evening one-way transfer to the Jazz Festival for another night of performances (subject to the event’s published schedule and availability).',
+      },
+      {
+        day: 'Day 13 - 1st July 2027',
+        title: 'Montreal at Leisure',
+        text: 'A free day to explore Montreal at your own pace — the cobbled streets and cafés of Old Montreal and the Old Port are an easy option.',
+        image: img('photo-1767290444122-5230a7fefef7'),
+        imageAlt: 'A cobblestone street in Old Montreal',
+      },
+      {
+        day: 'Day 14 - 2nd July 2027',
+        title: 'Departure',
+        text: 'After breakfast, check out from your hotel and transfer to the airport for your flight back home.',
+      },
+    ],
+    inclusions: [
+      'Private return airport transfers',
+      'Hotel accommodation as per the itinerary',
+      '7-night Alaska cruise aboard Celebrity Summit',
+      'Meals onboard the cruise',
+      'Daily breakfast at hotels',
+      'Two days of one-way transfers to the Jazz Festival venue',
+    ],
+    rates: {
+      note: 'Per person, in LKR, sharing twin — rate covers the cruise & ground arrangements only. Excludes visa, international & domestic flight tickets, Montreal International Jazz Festival tickets for 2 nights (subject to event schedule and availability), return transfers to and from the Jazz Festival venues, meals not mentioned in the itinerary, driver and guide tips, travel insurance, and anything else not mentioned in the itinerary.',
+      rows: [
+        { tier: 'Twin Sharing', twin: 'LKR 1,600,000 (starting from)', single: 'On Request' },
       ],
     },
   },
