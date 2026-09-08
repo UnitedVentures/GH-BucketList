@@ -2,14 +2,28 @@ import { m } from 'framer-motion'
 import Icon from './Icon.jsx'
 import { reveal } from '../lib/motion.js'
 
-// PLACEHOLDER COPY — swap in the real Go Holidays "About Us" narrative
-// and, if the four pillars below don't match how the business actually
+// If the four pillars below don't match how the business actually
 // operates, edit freely; nothing here is wired to other data.
 const FEATURES = [
   { icon: 'users', title: 'Small Groups', text: 'Intimate groups. Deeper connections.' },
   { icon: 'bed', title: 'Curated Stays', text: 'Handpicked stays with soul and story.' },
   { icon: 'route', title: 'Seamless Planning', text: 'Every detail handled. All you have to do is go.' },
   { icon: 'sparkle', title: 'Rare Experiences', text: 'Beyond the ordinary. Moments that last.' },
+]
+
+const BRANDS = [
+  {
+    name: 'Go Holidays',
+    href: 'https://goholidays.lk',
+    logo: 'images/gh_logo.png',
+    alt: 'Go Holidays',
+  },
+  {
+    name: 'United Ventures',
+    href: 'https://unitedventuressl.com',
+    logo: 'images/uv_logo.png',
+    alt: 'United Ventures',
+  },
 ]
 
 export default function AboutUs() {
@@ -20,16 +34,16 @@ export default function AboutUs() {
           <m.div {...reveal()}>
             <p className="eyebrow">About Us</p>
             <h2>
-              A small team, <em className="gold-grad">a singular focus</em>
+              Two names, <em className="gold-grad">one journey</em>
             </h2>
           </m.div>
           <m.div className="about__copy" {...reveal({ delay: 0.1 })}>
             <p>
-              Go Holidays has spent years designing journeys for travellers
-              who want more than a checklist of sights — the Bucket List
-              Collection is that philosophy distilled into twelve editions
-              a year, each one built around a single destination, in its
-              single best season.
+              The Bucket List Collection is brought to you by Go Holidays, a
+              Sri Lankan specialist in curated, small-group luxury travel —
+              in partnership with United Ventures, distilled into twelve
+              editions a year, each one built around a single destination,
+              in its single best season.
             </p>
             <p>
               We work in small numbers on purpose: fewer travellers per
@@ -52,6 +66,21 @@ export default function AboutUs() {
             </m.div>
           ))}
         </div>
+
+        <m.div className="about__brands" {...reveal({ delay: 0.2 })}>
+          {BRANDS.map((b) => (
+            <a
+              key={b.name}
+              className="about__brand"
+              href={b.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={`${import.meta.env.BASE_URL}${b.logo}`} alt={b.alt} />
+              <span>Visit {b.href.replace('https://', '')} →</span>
+            </a>
+          ))}
+        </m.div>
       </div>
     </section>
   )

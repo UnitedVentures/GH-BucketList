@@ -58,12 +58,26 @@ export default function Footer() {
         </div>
 
         <div className="footer__base">
-          <a className="footer__brand" href="./">
-            <img
-              src={`${import.meta.env.BASE_URL}images/Logo.svg`}
-              alt="Bucket List by Go Holidays"
-            />
-          </a>
+          <div className="footer__brands">
+            <a className="footer__brand" href="./">
+              <img
+                src={`${import.meta.env.BASE_URL}images/Logo.svg`}
+                alt="Bucket List by Go Holidays"
+              />
+            </a>
+            <a
+              className="footer__partner"
+              href="https://goholidays.lk"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Go Holidays"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/gh_logo.png`}
+                alt="Go Holidays"
+              />
+            </a>
+          </div>
           <p>© Bucket List by Go Holidays · One extraordinary journey at a time</p>
           <div className="footer__social">
             <a href="https://www.instagram.com/goholidays_srilanka/" aria-label="Instagram">

@@ -128,7 +128,7 @@ export default function Nav() {
             </li>
           ))}
           <li>
-            <button type="button" className="nav__drawerthemetoggle" onClick={toggleTheme}>
+            <button type="button" className="nav__drawerthemetoggle" onClick={toggleTheme} hidden>
               {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
               {theme === 'light' ? <IconMoon /> : <IconSun />}
             </button>

@@ -1361,6 +1361,49 @@ a {
   color: var(--cream-dim);
 }
 
+.about__brands {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.6rem;
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--line);
+}
+
+.about__brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+  padding: 1.6rem 1.8rem;
+  border: 1px solid var(--line);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.about__brand:hover {
+  border-color: rgba(var(--gold-rgb), 0.4);
+  background: rgba(var(--gold-rgb), 0.05);
+}
+
+.about__brand img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.about__brand span {
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stone);
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.about__brand:hover span {
+  color: var(--gold-soft);
+}
+
 /* ---------- client testimonials ---------- */
 
 .testimonials {
@@ -2038,15 +2081,34 @@ a {
   color: var(--stone);
 }
 
-.footer__brand {
+.footer__brands {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.footer__brand,
+.footer__partner {
   display: inline-flex;
   align-items: center;
 }
 
-.footer__brand img {
+.footer__brand img,
+.footer__partner img {
   height: 22px;
   width: auto;
   display: block;
+}
+
+.footer__partner {
+  padding-left: 1.6rem;
+  border-left: 1px solid rgba(var(--gold-rgb), 0.14);
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.footer__partner:hover {
+  opacity: 1;
 }
 
 .footer__social {
@@ -2279,8 +2341,13 @@ a {
   }
 
   .about__features,
+  .about__brands,
   .testimonials__grid {
     grid-template-columns: 1fr;
+  }
+
+  .about__brand {
+    flex-wrap: wrap;
   }
 
   .bucketgrid__grid {
