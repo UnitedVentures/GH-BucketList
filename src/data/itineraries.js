@@ -219,6 +219,8 @@ export const itineraries = {
         day: 'Day 06',
         title: 'Sintra & the Atlantic Coast',
         text: 'An excursion to Sintra to discover the spectacular Pena National Palace and the mysterious Quinta da Regaleira. The day continues to Cabo da Roca, the westernmost point of mainland Europe, before a stop in the elegant seaside resort of Cascais, returning to Lisbon in the evening.',
+        image: img('photo-1565865735988-fd5752a02846'),
+        imageAlt: 'The colourful Pena National Palace in Sintra, Portugal',
       },
       {
         day: 'Day 07',
@@ -733,6 +735,8 @@ export const itineraries = {
         day: 'Day 03',
         title: 'Into the Masai Mara',
         text: 'Depart for the iconic Masai Mara, driving through the dramatic Great Rift Valley before reaching the reserve’s sweeping savannahs. Check in to Sarova Mara Game Camp, enjoy lunch, and head out on an introductory afternoon game drive across the Mara’s wildlife-dotted plains.',
+        image: img('photo-1650936374671-6d6f95c0bbb7'),
+        imageAlt: 'Silhouetted Elephants on the plains of the Masai Mara at sunset',
       },
       {
         day: 'Day 04',
@@ -943,7 +947,7 @@ export const itineraries = {
     title: 'Alaska Cruise & Montreal Jazz Festival',
     location: 'Vancouver · Alaska · Montreal · Canada & USA',
     duration: '13 Nights / 14 Days',
-    heroImage: img('photo-1605978208410-c3deb0fab40d', 2400),
+    heroImage: img('photo-1772814586902-87d3d41ab00b', 2400),
     overview:
       'Seven nights cruising Alaska’s Inside Passage aboard Celebrity Summit — glaciers calving into Endicott Arm, the boardwalks of Skagway and Ketchikan, and the waterfront of Juneau — bookended by nights in Vancouver, then east to Montreal for two evenings at the Montreal International Jazz Festival.',
     facts: [
