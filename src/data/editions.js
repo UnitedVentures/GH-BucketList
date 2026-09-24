@@ -38,7 +38,7 @@ export const upcoming = [
     month: 'March 2027',
     place: 'Cape Town International Jazz Festival',
     country: 'South Africa',
-    image: img('photo-1569231290150-9c6200705c5b'),
+    image: img('photo-1707944494732-e706d511456d'),
   },
   {
     edition: 'Nº 04',
@@ -92,7 +92,7 @@ export const upcoming = [
     edition: 'Nº 10',
     slug: 'portugal-spain',
     month: 'October 2026',
-    place: 'Porto, Lisbon & Andalusia',
+    place: 'Porto, Lisbon & Andalusian cities',
     country: 'Portugal · Spain',
     image: img('photo-1579282240050-352db0a14c21'),
   },
