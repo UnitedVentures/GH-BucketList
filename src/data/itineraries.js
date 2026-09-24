@@ -195,6 +195,8 @@ export const itineraries = {
         day: 'Day 02',
         title: 'Douro River Cruise & Port Wine Tasting',
         text: 'After breakfast, board a scenic three-hour cruise on the Douro, followed by a visit to a winery in Vila Nova de Gaia for a tasting of the famous Port wine.',
+        image: img('photo-1772976995017-beab263bd898'),
+        imageAlt: 'The riverside of Porto, Portugal',
       },
       {
         day: 'Day 03',
@@ -238,16 +240,22 @@ export const itineraries = {
         day: 'Day 09',
         title: 'Excursion to Córdoba',
         text: 'A day trip to Córdoba to discover the remarkable Mosque-Cathedral, the narrow streets of the historic quarter, and its famous flower-filled patios. Return to Seville at the end of the day.',
+        image: img('photo-1732799208209-29cfcff75d3b'),
+        imageAlt: 'The historic centre of Córdoba, Spain',
       },
       {
         day: 'Day 10',
         title: 'Seville to Granada',
         text: 'A train journey to Granada, then check in to the Sercotel Palacio de los Gamboa for two nights. Visit the unmissable Alhambra, a masterpiece of Nasrid architecture, and its magnificent gardens.',
+        image: img('photo-1542115049-3af45a7e0ff4'),
+        imageAlt: 'The Alhambra in Granada, Spain',
       },
       {
         day: 'Day 11',
         title: 'Granada — the Albaicín',
         text: 'A free day to stroll the Albaicín district, admire the view from the San Nicolás viewpoint, or linger on the terraces of the historic centre.',
+        image: img('photo-1772976995017-beab263bd898'),
+        imageAlt: 'The riverside of Porto, Portugal',
       },
       {
         day: 'Day 12',
