@@ -323,8 +323,8 @@ export const itineraries = {
         day: 'Day 05',
         title: 'Afternoon Safari at Aquila Private Game Reserve',
         text: 'A trip to Aquila Private Game Reserve for an afternoon safari — welcome drinks, lunch, and a game drive in an open safari vehicle — before departing back to Cape Town.',
-        image: img('photo-1516426122078-c23e76319801'),
-        imageAlt: 'A lion on the reserve',
+        image: img('photo-1600521605615-a8d3a23d8262'),
+        imageAlt: 'Elephants on a safari drive at Aquila Private Game Reserve, South Africa',
       },
       {
         day: 'Day 06',
