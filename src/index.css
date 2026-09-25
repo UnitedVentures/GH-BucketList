@@ -2041,6 +2041,21 @@ a {
   color: var(--gold-soft);
 }
 
+.footer__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.footer__error {
+  margin-top: 1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: #c4573a;
+}
+
 .footer__form {
   display: flex;
   margin-top: 2.8rem;
