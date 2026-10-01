@@ -301,14 +301,14 @@ export const itineraries = {
       {
         day: 'Day 02',
         title: 'Table Mountain & City Tour — Jazz Festival Night One',
-        text: 'After a leisurely breakfast, embark on a Table Mountain and city tour: the aerial cable way (weather permitting), a Bo-Kaap walkabout, District Six Museum, Company’s Garden, the Houses of Parliament, a drive past the Grand Parade, and the Castle of Good Hope. Freshen up at the hotel before return transfers and tickets to the Cape Town International Jazz Festival.',
+        text: 'After a leisurely breakfast, embark on a Table Mountain and city tour: the aerial cable way (weather permitting), a Bo-Kaap walkabout, District Six Museum, Company’s Garden, the Houses of Parliament, a drive past the Grand Parade, and the Castle of Good Hope. Freshen up at the hotel, with the evening free at leisure.',
         image: img('photo-1415201364774-f6f0bb35f28f'),
         imageAlt: 'Cape Town city at dusk beneath Table Mountain',
       },
       {
         day: 'Day 03',
         title: 'Cape Winelands — Jazz Festival Night Two',
-        text: 'A full-day Winelands tour through Paarl, Franschhoek and Stellenbosch, with three wine tastings included. Freshen up at the hotel before return transfers and tickets to your second night at the Jazz Festival.',
+        text: 'A full-day Winelands tour through Paarl, Franschhoek and Stellenbosch, with three wine tastings included. Freshen up at the hotel, with the evening free at leisure.',
         image: img('photo-1741550865369-e9f6c2c4a084'),
         imageAlt: 'A vineyard with mountains in the background, Cape Winelands',
       },
