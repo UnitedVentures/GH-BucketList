@@ -1,5 +1,6 @@
 import { m } from 'framer-motion'
 import { reveal } from '../lib/motion.js'
+import { trackOnClick } from '../lib/metaPixel.js'
 
 /**
  * "None of these on your bucket list?" — the bespoke-trip nudge shared
@@ -15,7 +16,11 @@ export default function BespokeCta() {
         <br />
         <em className="gold-grad">We will design yours!</em>
       </p>
-      <a className="btn btn--solid" href="#contact">
+      <a
+        className="btn btn--solid"
+        href="#contact"
+        onClick={trackOnClick('BespokeCtaClick', { label: 'Talk to Us' })}
+      >
         Talk to Us <span aria-hidden="true">→</span>
       </a>
     </m.div>

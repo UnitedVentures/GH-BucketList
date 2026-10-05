@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { IconBrandInstagram, IconBrandFacebook, IconBrandWhatsapp } from '@tabler/icons-react'
 import { whatsapp } from '../data/editions.js'
-import { trackEvent } from '../lib/metaPixel.js'
+import { track, trackOnClick } from '../lib/metaPixel.js'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -30,12 +30,14 @@ export default function Footer() {
       const data = await res.json().catch(() => null)
       if (res.ok && data?.ok) {
         setSent(true)
-        trackEvent('CompleteRegistration', { content_name: 'Newsletter Signup' })
+        track('CompleteRegistration', { content_name: 'Newsletter Signup', placement: 'footer' })
       } else {
         setError(data?.error || 'Something went wrong. Please try again.')
+        track('NewsletterError', { status: res.status })
       }
     } catch {
       setError('Something went wrong. Please try again.')
+      track('NewsletterError', { status: 'network' })
     } finally {
       setSending(false)
     }
@@ -60,7 +62,7 @@ export default function Footer() {
             href={whatsapp('Hello Go Holidays! I\'d like to know more about the Bucket List Collection.')}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackEvent('Lead', { content_name: 'Footer WhatsApp CTA' })}
+            onClick={trackOnClick('Contact', { content_name: 'Footer WhatsApp CTA', content_category: 'WhatsApp', placement: 'footer_button' })}
           >
             Message Us on WhatsApp
           </a>
@@ -95,7 +97,11 @@ export default function Footer() {
 
         <div className="footer__base">
           <div className="footer__brands">
-            <a className="footer__brand" href="./">
+            <a
+              className="footer__brand"
+              href="./"
+              onClick={trackOnClick('NavClick', { label: 'Logo', placement: 'footer' })}
+            >
               <img
                 src={`${import.meta.env.BASE_URL}images/Logo.svg`}
                 alt="Bucket List by Go Holidays"
@@ -107,6 +113,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Go Holidays"
+              onClick={trackOnClick('OutboundClick', { destination: 'goholidays.lk', placement: 'footer_logo' })}
             >
               <img
                 src={`${import.meta.env.BASE_URL}images/gh_logo.png`}
@@ -116,10 +123,18 @@ export default function Footer() {
           </div>
           <p>© Bucket List by Go Holidays · One extraordinary journey at a time</p>
           <div className="footer__social">
-            <a href="https://www.instagram.com/goholidays_srilanka/" aria-label="Instagram">
+            <a
+              href="https://www.instagram.com/goholidays_srilanka/"
+              aria-label="Instagram"
+              onClick={trackOnClick('OutboundClick', { destination: 'instagram', placement: 'footer_social' })}
+            >
               <IconBrandInstagram />
             </a>
-            <a href="https://www.facebook.com/goholidays.srilanka" aria-label="Facebook">
+            <a
+              href="https://www.facebook.com/goholidays.srilanka"
+              aria-label="Facebook"
+              onClick={trackOnClick('OutboundClick', { destination: 'facebook', placement: 'footer_social' })}
+            >
               <IconBrandFacebook />
             </a>
             <a
@@ -127,7 +142,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
-              onClick={() => trackEvent('Lead', { content_name: 'Footer Social WhatsApp Icon' })}
+              onClick={trackOnClick('Contact', { content_name: 'Footer Social WhatsApp Icon', content_category: 'WhatsApp', placement: 'footer_icon' })}
             >
               <IconBrandWhatsapp />
             </a>

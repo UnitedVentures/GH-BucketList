@@ -92,7 +92,7 @@ export const upcoming = [
     edition: 'Nº 10',
     slug: 'portugal-spain',
     month: 'October 2026',
-    place: 'Porto, Lisbon & Andalusian cities',
+    place: 'Lisbon, Porto & Barcelona',
     country: 'Portugal · Spain',
     image: img('photo-1579282240050-352db0a14c21'),
   },

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { IconChevronDown, IconSun, IconMoon } from '@tabler/icons-react'
 import { months } from '../lib/months.js'
 import useTheme from '../hooks/useTheme.js'
+import { track, trackOnClick } from '../lib/metaPixel.js'
 
 // "./" (not "/") throughout: the site is hosted under a sub-path on
 // GitHub Pages, so an absolute root path would resolve to the wrong
@@ -15,6 +16,10 @@ const LINKS = [
 ]
 
 const chevron = <IconChevronDown />
+
+const navClick = (label, placement) => trackOnClick('NavClick', { label, placement })
+const monthClick = (mo, placement) =>
+  trackOnClick('SelectItinerary', { content_ids: [mo.slug], content_name: mo.place, placement })
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
@@ -43,10 +48,22 @@ export default function Nav() {
     setCalendarOpen(false)
   }
 
+  const onToggleTheme = () => {
+    track('ThemeToggle', { theme: theme === 'light' ? 'dark' : 'light' })
+    toggleTheme()
+  }
+
   return (
     <header className={`nav${scrolled ? ' is-scrolled' : ''}${open ? ' is-open' : ''}`}>
       <div className="wrap nav__inner">
-        <a className="nav__brand" href="./" onClick={closeAll}>
+        <a
+          className="nav__brand"
+          href="./"
+          onClick={() => {
+            track('NavClick', { label: 'Logo', placement: 'header' })
+            closeAll()
+          }}
+        >
           <img
             src={`${import.meta.env.BASE_URL}images/Logo.svg`}
             alt="Bucket List by Go Holidays"
@@ -55,14 +72,18 @@ export default function Nav() {
         <nav>
           <ul className="nav__links">
             <li className="nav__item nav__item--calendar">
-              <a href="?page=calendar">
+              <a href="?page=calendar" onClick={navClick('Calendar', 'header')}>
                 Calendar
                 <span className="nav__chevron" aria-hidden="true">{chevron}</span>
               </a>
               <div className="nav__dropdown">
                 <div className="nav__dropdowngrid">
                   {months.map((mo) => (
-                    <a key={mo.slug} href={`?itinerary=${mo.slug}`}>
+                    <a
+                      key={mo.slug}
+                      href={`?itinerary=${mo.slug}`}
+                      onClick={monthClick(mo, 'nav_dropdown')}
+                    >
                       <span className="nav__dropdownmonth">{mo.short}</span>
                       <span className="nav__dropdownplace">{mo.place}</span>
                     </a>
@@ -72,7 +93,7 @@ export default function Nav() {
             </li>
             {LINKS.map((l) => (
               <li key={l.href}>
-                <a href={l.href}>{l.label}</a>
+                <a href={l.href} onClick={navClick(l.label, 'header')}>{l.label}</a>
               </li>
             ))}
             <li>
@@ -80,7 +101,7 @@ export default function Nav() {
                 type="button"
                 className="nav__themetoggle"
                 aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-                onClick={toggleTheme}
+                onClick={onToggleTheme}
               >
                 {theme === 'light' ? <IconMoon /> : <IconSun />}
               </button>
@@ -92,7 +113,10 @@ export default function Nav() {
           className="nav__burger"
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
-          onClick={() => setOpen((o) => !o)}
+          onClick={() => {
+            track('NavClick', { label: open ? 'Close Menu' : 'Open Menu', placement: 'header' })
+            setOpen((o) => !o)
+          }}
         >
           <span />
           <span />
@@ -103,20 +127,38 @@ export default function Nav() {
         <ul className="nav__drawerlinks">
           <li className={`nav__drawercalendar${calendarOpen ? ' is-open' : ''}`}>
             <div className="nav__drawercalendarrow">
-              <a href="?page=calendar" onClick={closeAll}>Calendar</a>
+              <a
+                href="?page=calendar"
+                onClick={() => {
+                  track('NavClick', { label: 'Calendar', placement: 'drawer' })
+                  closeAll()
+                }}
+              >
+                Calendar
+              </a>
               <button
                 type="button"
                 className="nav__drawertoggle"
                 aria-label={calendarOpen ? 'Hide months' : 'Show months'}
                 aria-expanded={calendarOpen}
-                onClick={() => setCalendarOpen((o) => !o)}
+                onClick={() => {
+                  track('NavClick', { label: calendarOpen ? 'Hide Months' : 'Show Months', placement: 'drawer' })
+                  setCalendarOpen((o) => !o)
+                }}
               >
                 {chevron}
               </button>
             </div>
             <div className="nav__drawermonths">
               {months.map((mo) => (
-                <a key={mo.slug} href={`?itinerary=${mo.slug}`} onClick={closeAll}>
+                <a
+                  key={mo.slug}
+                  href={`?itinerary=${mo.slug}`}
+                  onClick={() => {
+                    track('SelectItinerary', { content_ids: [mo.slug], content_name: mo.place, placement: 'nav_drawer' })
+                    closeAll()
+                  }}
+                >
                   <span>{mo.short}</span> {mo.place}
                 </a>
               ))}
@@ -124,11 +166,19 @@ export default function Nav() {
           </li>
           {LINKS.map((l) => (
             <li key={l.href}>
-              <a href={l.href} onClick={closeAll}>{l.label}</a>
+              <a
+                href={l.href}
+                onClick={() => {
+                  track('NavClick', { label: l.label, placement: 'drawer' })
+                  closeAll()
+                }}
+              >
+                {l.label}
+              </a>
             </li>
           ))}
           <li>
-            <button type="button" className="nav__drawerthemetoggle" onClick={toggleTheme} hidden>
+            <button type="button" className="nav__drawerthemetoggle" onClick={onToggleTheme} hidden>
               {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
               {theme === 'light' ? <IconMoon /> : <IconSun />}
             </button>

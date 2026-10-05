@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { IconChevronLeft } from '@tabler/icons-react'
 import { itineraries } from '../data/itineraries.js'
 import { featured, upcoming, whatsapp } from '../data/editions.js'
 import { renderItineraryElement } from '../lib/itineraryDocument.js'
-import { trackEvent } from '../lib/metaPixel.js'
+import { track, trackOnClick } from '../lib/metaPixel.js'
 import Nav from './Nav.jsx'
 import Footer from './Footer.jsx'
 
@@ -56,7 +56,11 @@ function ComingSoon({ destination }) {
             first to receive it.
           </p>
           <div className="itin__soonactions">
-            <a className="btn btn--solid" href="./">
+            <a
+              className="btn btn--solid"
+              href="./"
+              onClick={trackOnClick('NavClick', { label: 'Explore the Collection', placement: 'coming_soon' })}
+            >
               Explore the Collection
             </a>
             {destination && (
@@ -67,7 +71,7 @@ function ComingSoon({ destination }) {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackEvent('Lead', { content_name: destination.place, content_category: 'Ask the Concierge' })}
+                onClick={trackOnClick('Lead', { content_name: destination.place, content_ids: [destination.slug], content_category: 'Ask the Concierge', placement: 'coming_soon' })}
               >
                 Ask the Concierge
               </a>
@@ -85,20 +89,6 @@ export default function Itinerary({ slug }) {
   const destination = allDestinations.find((d) => d.slug === slug)
   const [downloading, setDownloading] = useState(false)
 
-  useEffect(() => {
-    if (itin) {
-      trackEvent('ViewContent', {
-        content_name: itin.title,
-        content_ids: [slug],
-        content_type: 'product',
-        content_category: 'Itinerary',
-      })
-    }
-    // fires once per itinerary page load — slug is the only value that
-    // should ever change what gets tracked here
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug])
-
   if (!itin) return <ComingSoon destination={destination} />
 
   const reserveUrl = whatsapp(
@@ -107,7 +97,7 @@ export default function Itinerary({ slug }) {
 
   const download = async () => {
     if (downloading) return
-    trackEvent('Lead', { content_name: itin.title, content_category: 'Itinerary Download' })
+    track('DownloadItinerary', { content_name: itin.title, content_ids: [slug] })
     setDownloading(true)
     const host = renderItineraryElement(itin)
     document.body.appendChild(host)
@@ -147,7 +137,11 @@ export default function Itinerary({ slug }) {
           aria-label={itin.title}
         />
         <div className="itin__heroveil" aria-hidden="true" />
-        <a className="itin__back" href="?page=calendar">
+        <a
+          className="itin__back"
+          href="?page=calendar"
+          onClick={trackOnClick('NavClick', { label: 'Back to the Calendar', placement: 'itinerary_hero' })}
+        >
           <IconChevronLeft />
           Back to the Calendar
         </a>
@@ -161,7 +155,7 @@ export default function Itinerary({ slug }) {
               href={reserveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackEvent('Lead', { content_name: itin.title, content_category: 'Hero Reserve CTA' })}
+              onClick={trackOnClick('Lead', { content_name: itin.title, content_ids: [slug], content_category: 'Hero Reserve CTA', placement: 'itinerary_hero' })}
             >
               Reserve the Experience
             </a>
@@ -278,11 +272,15 @@ export default function Itinerary({ slug }) {
                 href={reserveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackEvent('Lead', { content_name: itin.title, content_category: 'Bottom Reserve CTA' })}
+                onClick={trackOnClick('Lead', { content_name: itin.title, content_ids: [slug], content_category: 'Bottom Reserve CTA', placement: 'itinerary_bottom' })}
               >
                 Reserve the Experience
               </a>
-              <a className="btn btn--ghost" href="?page=calendar">
+              <a
+                className="btn btn--ghost"
+                href="?page=calendar"
+                onClick={trackOnClick('NavClick', { label: 'Back to the Calendar', placement: 'itinerary_bottom' })}
+              >
                 Back to the Calendar
               </a>
             </div>

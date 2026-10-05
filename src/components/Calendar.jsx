@@ -3,6 +3,7 @@ import { m } from 'framer-motion'
 import { IconChevronRight } from '@tabler/icons-react'
 import { months } from '../lib/months.js'
 import { reveal } from '../lib/motion.js'
+import { track, trackOnClick } from '../lib/metaPixel.js'
 
 const chevron = <IconChevronRight />
 
@@ -49,7 +50,14 @@ export default function Calendar() {
   const total = months.length
   const activeMonth = months[active]
 
-  const step = (dir) => setActive((a) => (a + dir + total) % total)
+  const step = (dir, method) => {
+    track('DeckBrowse', {
+      direction: dir > 0 ? 'next' : 'prev',
+      method,
+      content_name: months[(active + dir + total) % total].place,
+    })
+    setActive((a) => (a + dir + total) % total)
+  }
 
   const onPanStart = () => setDragging(true)
 
@@ -61,14 +69,20 @@ export default function Calendar() {
   const onPanEnd = (_, info) => {
     setDragging(false)
     setDragX(0)
-    if (info.offset.x < -60 || info.velocity.x < -400) step(1)
-    else if (info.offset.x > 60 || info.velocity.x > 400) step(-1)
+    if (info.offset.x < -60 || info.velocity.x < -400) step(1, 'swipe')
+    else if (info.offset.x > 60 || info.velocity.x > 400) step(-1, 'swipe')
   }
 
   // a quick zoom-in on the clicked card, then navigate — rather than
   // cutting straight to the itinerary page with no transition at all
-  const goToItinerary = (slug) => {
+  const goToItinerary = (mo) => {
     if (navigatingSlug) return
+    track('SelectItinerary', {
+      content_ids: [mo.slug],
+      content_name: mo.place,
+      placement: 'home_deck_card',
+    })
+    const slug = mo.slug
     setNavigatingSlug(slug)
     setTimeout(() => {
       window.location.href = `?itinerary=${slug}`
@@ -91,7 +105,7 @@ export default function Calendar() {
         <button
           type="button"
           className="calendar__chevron calendar__chevron--prev"
-          onClick={() => step(-1)}
+          onClick={() => step(-1, 'chevron')}
           aria-label="Previous month"
         >
           {chevron}
@@ -128,7 +142,12 @@ export default function Calendar() {
                 }
                 onClick={() => {
                   if (Math.abs(dragDistanceRef.current) > 8) return
-                  isActive ? goToItinerary(mo.slug) : setActive(i)
+                  if (isActive) {
+                    goToItinerary(mo)
+                  } else {
+                    track('DeckBrowse', { direction: 'jump', method: 'card_click', content_name: mo.place })
+                    setActive(i)
+                  }
                 }}
                 aria-label={`${mo.place}, ${mo.month}`}
               >
@@ -142,7 +161,7 @@ export default function Calendar() {
         <button
           type="button"
           className="calendar__chevron calendar__chevron--next"
-          onClick={() => step(1)}
+          onClick={() => step(1, 'chevron')}
           aria-label="Next month"
         >
           {chevron}
@@ -154,7 +173,15 @@ export default function Calendar() {
           {activeMonth.full} · {activeMonth.place}
         </p>
         <h3 className="calendar__panelplace serif">{activeMonth.country}</h3>
-        <a className="calendar__panellink" href={`?itinerary=${activeMonth.slug}`}>
+        <a
+          className="calendar__panellink"
+          href={`?itinerary=${activeMonth.slug}`}
+          onClick={trackOnClick('SelectItinerary', {
+            content_ids: [activeMonth.slug],
+            content_name: activeMonth.place,
+            placement: 'home_deck_link',
+          })}
+        >
           View Itinerary <span aria-hidden="true">→</span>
         </a>
       </div>

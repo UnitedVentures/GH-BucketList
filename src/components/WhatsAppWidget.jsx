@@ -1,6 +1,6 @@
 import { AnimatePresence, m } from 'framer-motion'
 import { whatsapp } from '../data/editions.js'
-import { trackEvent } from '../lib/metaPixel.js'
+import { trackOnClick } from '../lib/metaPixel.js'
 import useWhatsAppGreeting from '../hooks/useWhatsAppGreeting.js'
 import Icon from './Icon.jsx'
 
@@ -26,7 +26,7 @@ export default function WhatsAppWidget() {
             href={GREETING_HREF}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackEvent('Lead', { content_name: 'WhatsApp Widget Greeting' })}
+            onClick={trackOnClick('Contact', { content_name: 'WhatsApp Widget Greeting', content_category: 'WhatsApp', placement: 'floating_greeting' })}
             initial={{ opacity: 0, x: 24, scale: 0.92 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 24, scale: 0.92 }}
@@ -42,7 +42,7 @@ export default function WhatsAppWidget() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
-        onClick={() => trackEvent('Lead', { content_name: 'WhatsApp Widget' })}
+        onClick={trackOnClick('Contact', { content_name: 'WhatsApp Widget', content_category: 'WhatsApp', placement: 'floating_icon' })}
       >
         <Icon name="whatsapp" className="whatsapp-widget__icon" />
       </a>

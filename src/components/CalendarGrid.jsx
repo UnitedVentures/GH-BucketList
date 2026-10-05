@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { m } from 'framer-motion'
 import { months } from '../lib/months.js'
+import { track } from '../lib/metaPixel.js'
 
 const EASE = [0.16, 1, 0.3, 1]
 
@@ -16,9 +17,15 @@ export default function CalendarGrid() {
   // cutting straight to the itinerary page with no transition at all.
   // Scale gets its own (fast, no-delay) transition, kept separate from
   // the reveal-on-scroll transition below so the two don't fight.
-  const handleClick = (e, slug) => {
+  const handleClick = (e, mo) => {
     e.preventDefault()
     if (navigatingSlug) return
+    track('SelectItinerary', {
+      content_ids: [mo.slug],
+      content_name: mo.place,
+      placement: 'calendar_grid',
+    })
+    const slug = mo.slug
     setNavigatingSlug(slug)
     setTimeout(() => {
       window.location.href = `?itinerary=${slug}`
@@ -42,7 +49,7 @@ export default function CalendarGrid() {
               key={mo.slug}
               href={`?itinerary=${mo.slug}`}
               style={{ backgroundImage: `url(${mo.image})` }}
-              onClick={(e) => handleClick(e, mo.slug)}
+              onClick={(e) => handleClick(e, mo)}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}

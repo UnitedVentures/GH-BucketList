@@ -1,6 +1,7 @@
 import { m } from 'framer-motion'
 import Icon from './Icon.jsx'
 import { reveal } from '../lib/motion.js'
+import { trackOnClick } from '../lib/metaPixel.js'
 
 // If the four pillars below don't match how the business actually
 // operates, edit freely; nothing here is wired to other data.
@@ -75,6 +76,10 @@ export default function AboutUs() {
               href={b.href}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={trackOnClick('OutboundClick', {
+                destination: b.href.replace('https://', ''),
+                placement: 'about_page',
+              })}
             >
               <img src={`${import.meta.env.BASE_URL}${b.logo}`} alt={b.alt} />
               <span>Visit {b.href.replace('https://', '')} →</span>

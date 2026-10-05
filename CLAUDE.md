@@ -28,6 +28,10 @@ React 18 + Vite. No router lib, no CSS framework, no state lib.
   - `Footer.jsx` — local-only signup form, not wired to a backend yet
   - `Upcoming.jsx` / `Band.jsx` — currently unused, kept for later
   - Hooks: `useScramble`, `useParallax`, `useReveal`, `useLenis`
+  - Tracking: every Meta Pixel event goes through `src/lib/metaPixel.js` (`track` /
+    `trackOnClick` — never call `fbq` directly); the event taxonomy (which clicks are
+    Lead vs Contact vs custom) is documented at the top of that file. `usePageTracking`
+    fires the per-page view + scroll-depth events from `App.jsx`.
 
 ## Data (edit these for monthly content — no component changes needed)
 - `src/data/editions.js` — `featured`, `upcoming[11]`, `whatsapp(msg)` helper

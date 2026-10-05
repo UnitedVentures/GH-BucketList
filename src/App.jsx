@@ -14,6 +14,8 @@ import WhatsAppWidget from './components/WhatsAppWidget.jsx'
 import useReveal from './hooks/useReveal.js'
 import useLenis from './hooks/useLenis.js'
 import useButtonShimmer from './hooks/useButtonShimmer.js'
+import usePageTracking from './hooks/usePageTracking.js'
+import { track } from './lib/metaPixel.js'
 
 const STORY_KEY = 'bucketlist:storySeenAt'
 const STORY_TTL = 24 * 60 * 60 * 1000 // the intro reappears after a while, not on every refresh
@@ -49,7 +51,11 @@ export default function App() {
   const slug = params.get('itinerary')
   const page = params.get('page')
 
+  // "ready" = a real page (not the intro Story) is on screen
+  usePageTracking({ slug, page, ready: revealed || Boolean(slug) || Boolean(page) })
+
   const onReveal = () => {
+    track('StoryComplete')
     try {
       localStorage.setItem(STORY_KEY, String(Date.now()))
     } catch {
